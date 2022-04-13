@@ -52,6 +52,9 @@ contract Subscrypto {
     // Called by subscription seller to receive their payment
     function receiveSubscription(address sender) public returns (bool) {
         updatePaymentAvailable(sender, msg.sender); // update amount to pay only when payment has to be made
+        if (accounts[sender].subscriptions[msg.sender].payment_available == 0) {
+            return false;
+        }
         payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
         accounts[sender].subscriptions[msg.sender].payment_available = 0;
         return true;
