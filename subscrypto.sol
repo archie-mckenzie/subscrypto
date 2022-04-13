@@ -3,14 +3,11 @@
 pragma solidity >=0.6.0 <0.9.0;
 
 contract Subscrypto {
-    // Constants for time periods (s)
+    // Constants for time periods
     uint constant day = 24 hours;
     uint constant week = 1 weeks;
     uint constant year = 365.25 days;
     uint constant month = year / 12;
-
-    // Struct which stores SubscriptionInfo structs
-    mapping(address => SubscryptoAccount) accounts;
 
     // SubscriptionInfo struct
     struct SubscriptionInfo {
@@ -27,9 +24,11 @@ contract Subscrypto {
     struct SubscryptoAccount {
         mapping(address => SubscriptionInfo) subscriptions;
     }
+
+    // Map which stores Subscrypto Accounts for each user
+    mapping(address => SubscryptoAccount) accounts;
     
-    // Create a new SubscriptionInfo struct
-    SubscriptionInfo s;
+    SubscriptionInfo s; // Possible new SubscriptionInfo struct
     function newSubscription(address receiver, uint256 payment_amount, uint time_between_payments) public payable {
         // If subscription already exists, add balance to itinstead of creating new
         if (accounts[msg.sender].subscriptions[receiver].next_payment_time != 0) {
