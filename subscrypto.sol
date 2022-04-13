@@ -35,7 +35,7 @@ contract Subscrypto {
         if (accounts[msg.sender].subscriptions[receiver].next_payment_time != 0) {
             addBalance(receiver);
         } else { // If subscription does not exist, create new subscription
-            s = SubscriptionInfo(msg.sender, receiver, (msg.value - (msg.value / 200)), payment_amount, 0, 0, time_between_payments);
+            s = SubscriptionInfo(msg.sender, receiver, msg.value, payment_amount, 0, 0, time_between_payments);
             if (s.balance >= payment_amount) {
                 s.balance = s.balance - payment_amount;
                 s.payment_available = payment_amount;
