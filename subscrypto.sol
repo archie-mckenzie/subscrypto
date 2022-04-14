@@ -50,26 +50,49 @@ contract Subscrypto {
 
     // Allows a subscriber to withdraw their excess ETH and cancel their subscription 
     function cancelSubscription(address receiver) public payable {
-         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
-              payable(msg.sender).transfer(accounts[msg.sender].subscriptions[receiver].balance);
-              accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, 0, 0, 0, 0, 0);
-        } else {
-            uint256 remainder = accounts[msg.sender].subscriptions[receiver].balance % accounts[msg.sender].subscriptions[receiver].payment_amount;
-            accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance - remainder;
-            payable(msg.sender).transfer(remainder);
+        payable(msg.sender).transfer(accounts[msg.sender].subscriptions[receiver].balance);
+        payable(receiver).transfer(accounts[msg.sender].subscriptions[receiver].payment_available);
+        accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, 0, 0, 0, 0, 0);
+    }
+ 
+    // Withdraws a specified amount from 
+    function withdrawAmount(address receiver, uint256 amount) public payable {
+        require(accounts[msg.sender].subscriptions[receiver].balance >= amount, "Balance too low!");
+        accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance - amount;
+        payable(msg.sender).transfer(amount);
+        if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
+            cancelSubscription(receiver);
         }
+    }
+
+    // Withdraws any excess ETH being held in escrow by the contract
+    // Cancels subscription if balance falls below 
+    function withdrawExcess(address receiver) public payable {
+        uint256 remainder = accounts[msg.sender].subscriptions[receiver].balance % accounts[msg.sender].subscriptions[receiver].payment_amount;
+        accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance - remainder;
+        payable(msg.sender).transfer(remainder);
+        if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
+            cancelSubscription(receiver);
+        }
+    }
+
+    // Checks if a subscription or payment over time is currently active
+    function isActive(address sender, address receiver) view public returns (bool) {
+        return accounts[sender].subscriptions[receiver].next_payment_time != 0;
     }
 
     // Called by subscription seller to receive their payment
     function receiveSubscription(address sender) public returns (bool) {
+        // Cancel subscription if balance is not enough
+        if (accounts[sender].subscriptions[msg.sender].balance < accounts[sender].subscriptions[msg.sender].payment_amount) {
+            payable(sender).transfer(accounts[sender].subscriptions[msg.sender].balance);
+            payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
+            accounts[sender].subscriptions[msg.sender] = SubscriptionInfo(sender, msg.sender, 0, 0, 0, 0, 0);
+        }
         updatePaymentAvailable(sender, msg.sender); // update amount to pay only when payment has to be made
         require(accounts[sender].subscriptions[msg.sender].payment_available >= accounts[sender].subscriptions[msg.sender].payment_amount, "No ETH to be collected!");
         payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
         accounts[sender].subscriptions[msg.sender].payment_available = 0;
-        // Cancel subscription if balance hits 0
-        if (accounts[sender].subscriptions[msg.sender].balance == 0) {
-            accounts[sender].subscriptions[msg.sender] = SubscriptionInfo(sender, msg.sender, 0, 0, 0, 0, 0);
-        }
         return true;
     }
 
