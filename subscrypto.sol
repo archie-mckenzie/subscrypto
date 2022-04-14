@@ -49,20 +49,35 @@ contract Subscrypto {
         accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance + msg.value;
     }
 
+    // Allows a subscriber to withdraw their excess ETH and cancel their subscription 
+    function cancelSubscription(address receiver) public payable {
+         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
+              payable(msg.sender).transfer(accounts[msg.sender].subscriptions[receiver].balance);
+              accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, 0, 0, 0, 0, 0);
+        } else {
+            uint256 remainder = accounts[msg.sender].subscriptions[receiver].balance % accounts[msg.sender].subscriptions[receiver].payment_amount;
+            accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance - remainder;
+            payable(msg.sender).transfer(remainder);
+        }
+    }
+
     // Called by subscription seller to receive their payment
     function receiveSubscription(address sender) public returns (bool) {
         updatePaymentAvailable(sender, msg.sender); // update amount to pay only when payment has to be made
-        if (accounts[sender].subscriptions[msg.sender].payment_available == 0) {
-            return false;
-        }
+        require(accounts[sender].subscriptions[msg.sender].payment_available >= accounts[sender].subscriptions[msg.sender].payment_amount, "No ETH to be collected!");
         payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
         accounts[sender].subscriptions[msg.sender].payment_available = 0;
+        // Cancel subscription if balance hits 0
+        if (accounts[sender].subscriptions[msg.sender].balance == 0) {
+            accounts[sender].subscriptions[msg.sender] = SubscriptionInfo(sender, msg.sender, 0, 0, 0, 0, 0);
+        }
         return true;
     }
 
     // Update the payment available to collect
     function updatePaymentAvailable(address sender, address receiver) public {
         while (accounts[sender].subscriptions[receiver].next_payment_time <= block.timestamp) {
+            require(accounts[sender].subscriptions[receiver].balance != 0, "Subscription plan does not exist!");
             // Check that there is enough balance
             if (accounts[sender].subscriptions[receiver].balance < accounts[sender].subscriptions[receiver].payment_amount) {
                 break;
