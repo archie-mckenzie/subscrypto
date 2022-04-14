@@ -88,6 +88,7 @@ contract Subscrypto {
             payable(sender).transfer(accounts[sender].subscriptions[msg.sender].balance);
             payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
             accounts[sender].subscriptions[msg.sender] = SubscriptionInfo(sender, msg.sender, 0, 0, 0, 0, 0);
+            return false;
         }
         updatePaymentAvailable(sender, msg.sender); // update amount to pay only when payment has to be made
         require(accounts[sender].subscriptions[msg.sender].payment_available >= accounts[sender].subscriptions[msg.sender].payment_amount, "No ETH to be collected!");
@@ -99,7 +100,7 @@ contract Subscrypto {
     // Update the payment available to collect
     function updatePaymentAvailable(address sender, address receiver) public {
         while (accounts[sender].subscriptions[receiver].next_payment_time <= block.timestamp) {
-            require(accounts[sender].subscriptions[receiver].balance != 0, "Subscription plan does not exist!");
+            require(accounts[sender].subscriptions[receiver].next_payment_time != 0, "Subscription plan does not exist!");
             // Check that there is enough balance
             if (accounts[sender].subscriptions[receiver].balance < accounts[sender].subscriptions[receiver].payment_amount) {
                 break;
