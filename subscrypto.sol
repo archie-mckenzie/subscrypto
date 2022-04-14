@@ -12,10 +12,10 @@ contract Subscrypto {
     // SubscriptionInfo struct
     struct SubscriptionInfo {
         address sender; // payer of subscription 
-        address receiver; // seller of subscription
+        address receiver; // payee of subscription
         uint256 balance; // unused amount left in subscription 
         uint256 payment_amount; // agreed amount paid at each interval
-        uint256 payment_available; // amount ready to be paid out instantly
+        uint256 payment_available; // amount ready to be paid out to payee instantly
         uint next_payment_time; // next timestamp that payment_amount should be deducted from balance and added to payment_available
         uint time_between_payments; // interval between payment times
     }
@@ -33,7 +33,8 @@ contract Subscrypto {
         // If subscription already exists, add balance to itinstead of creating new
         if (accounts[msg.sender].subscriptions[receiver].next_payment_time != 0) {
             addBalance(receiver);
-        } else { // If subscription does not exist, create new subscription
+        } 
+        else { // If subscription does not exist, create new subscription
             s = SubscriptionInfo(msg.sender, receiver, msg.value, payment_amount, 0, time_between_payments + block.timestamp, time_between_payments);
             if (s.balance >= payment_amount) {
                 s.balance = s.balance - payment_amount;
@@ -50,8 +51,10 @@ contract Subscrypto {
 
     // Allows a subscriber to withdraw their excess ETH and cancel their subscription 
     function cancelSubscription(address receiver) public payable {
+        // Transfer money to appropriate parties
         payable(msg.sender).transfer(accounts[msg.sender].subscriptions[receiver].balance);
         payable(receiver).transfer(accounts[msg.sender].subscriptions[receiver].payment_available);
+        // Reset the subscription
         accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, 0, 0, 0, 0, 0);
     }
  
@@ -66,7 +69,7 @@ contract Subscrypto {
     }
 
     // Withdraws any excess ETH being held in escrow by the contract
-    // Cancels subscription if balance falls below 
+    // Cancels subscription if balance falls below payment_amount
     function withdrawExcess(address receiver) public payable {
         uint256 remainder = accounts[msg.sender].subscriptions[receiver].balance % accounts[msg.sender].subscriptions[receiver].payment_amount;
         accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance - remainder;
@@ -85,12 +88,14 @@ contract Subscrypto {
     function receiveSubscription(address sender) public returns (bool) {
         // Cancel subscription if balance is not enough
         if (accounts[sender].subscriptions[msg.sender].balance < accounts[sender].subscriptions[msg.sender].payment_amount) {
+            // Transfer money to appropriate parties
             payable(sender).transfer(accounts[sender].subscriptions[msg.sender].balance);
             payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
+            // Reset the subscription
             accounts[sender].subscriptions[msg.sender] = SubscriptionInfo(sender, msg.sender, 0, 0, 0, 0, 0);
             return false;
         }
-        updatePaymentAvailable(sender, msg.sender); // update amount to pay only when payment has to be made
+        updatePaymentAvailable(sender, msg.sender); // update amount to pay immediately before payment has to be made
         require(accounts[sender].subscriptions[msg.sender].payment_available >= accounts[sender].subscriptions[msg.sender].payment_amount, "No ETH to be collected!");
         payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
         accounts[sender].subscriptions[msg.sender].payment_available = 0;
