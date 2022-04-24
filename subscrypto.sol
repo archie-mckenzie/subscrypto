@@ -36,7 +36,7 @@ contract Subscrypto {
             addBalance(receiver);
         } 
         else { // If subscription does not exist, create new subscription
-            require(msg.value >= payment_amount, "Not enough ETH for first payment!")
+            require(msg.value >= payment_amount, "Not enough ETH for first payment!");
             accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, msg.value, payment_amount, 0, 0, time_between_payments + block.timestamp, 0, time_between_payments);
             accounts[msg.sender].subscriptions[receiver].balance -= payment_amount;
             accounts[msg.sender].subscriptions[receiver].payment_available = payment_amount;
