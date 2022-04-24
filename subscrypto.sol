@@ -38,7 +38,7 @@ contract Subscrypto {
         else { // If subscription does not exist, create new subscription
             accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, msg.value, payment_amount, 0, 0, time_between_payments + block.timestamp, 0, time_between_payments);
             if (accounts[msg.sender].subscriptions[receiver].balance >= payment_amount) {
-                accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance - payment_amount;
+                accounts[msg.sender].subscriptions[receiver].balance -= payment_amount;
                 accounts[msg.sender].subscriptions[receiver].payment_available = payment_amount;
             }
             
@@ -60,10 +60,10 @@ contract Subscrypto {
         // accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, 0, 0, 0, 0, 0);
     }
  
-    // Withdraws a specified amount from 
+    // Withdraws a specified amount from subscription plan
     function withdrawAmount(address receiver, uint256 amount) public payable {
         require(accounts[msg.sender].subscriptions[receiver].balance >= amount, "Balance too low!");
-        accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance - amount;
+        accounts[msg.sender].subscriptions[receiver].balance -= amount;
         payable(msg.sender).transfer(amount);
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
             cancelSubscription(receiver);
@@ -74,7 +74,7 @@ contract Subscrypto {
     // Cancels subscription if balance falls below payment_amount
     function withdrawExcess(address receiver) public payable {
         uint256 remainder = accounts[msg.sender].subscriptions[receiver].balance % accounts[msg.sender].subscriptions[receiver].payment_amount;
-        accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance - remainder;
+        accounts[msg.sender].subscriptions[receiver].balance -= remainder;
         payable(msg.sender).transfer(remainder);
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
             cancelSubscription(receiver);
@@ -116,11 +116,11 @@ contract Subscrypto {
                 break;
             }
             // Reduce balance by agreed amount
-            accounts[sender].subscriptions[receiver].balance = accounts[sender].subscriptions[receiver].balance - accounts[sender].subscriptions[receiver].payment_amount;
+            accounts[sender].subscriptions[receiver].balance -= accounts[sender].subscriptions[receiver].payment_amount;
             // Increase total ETH available to collect by agreed amount
-            accounts[sender].subscriptions[receiver].payment_available = accounts[sender].subscriptions[receiver].payment_available + accounts[sender].subscriptions[receiver].payment_amount;
+            accounts[sender].subscriptions[receiver].payment_available += accounts[sender].subscriptions[receiver].payment_amount;
             // Adjust next payment time
-            accounts[sender].subscriptions[receiver].next_payment_time = accounts[sender].subscriptions[receiver].next_payment_time + accounts[sender].subscriptions[receiver].time_between_payments;
+            accounts[sender].subscriptions[receiver].next_payment_time += accounts[sender].subscriptions[receiver].time_between_payments;
             // Repeat if necessary (maybe the subscription seller hasn't cashed out in a long time?)
         }
     }
