@@ -36,17 +36,18 @@ contract Subscrypto {
             addBalance(receiver);
         } 
         else { // If subscription does not exist, create new subscription
+            require(msg.value >= payment_amount, "Not enough ETH for first payment!")
             accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, msg.value, payment_amount, 0, 0, time_between_payments + block.timestamp, 0, time_between_payments);
-            if (accounts[msg.sender].subscriptions[receiver].balance >= payment_amount) {
-                accounts[msg.sender].subscriptions[receiver].balance -= payment_amount;
-                accounts[msg.sender].subscriptions[receiver].payment_available = payment_amount;
-            }
-            
+            accounts[msg.sender].subscriptions[receiver].balance -= payment_amount;
+            accounts[msg.sender].subscriptions[receiver].payment_available = payment_amount;
+            accounts[msg.sender].subscriptions[receiver].last_payment_time = block.timestamp;
+            accounts[msg.sender].subscriptions[receiver].next_payment_time += accounts[sender].subscriptions[receiver].time_between_payments;
         }
     }
 
     // Add balance to an existing subscriptionInfo struct
     function addBalance(address receiver) public payable {
+        require(isActive(msg.sender, receiver), "Subscription not active!")
         accounts[msg.sender].subscriptions[receiver].balance += msg.value;
     }
 
@@ -81,9 +82,22 @@ contract Subscrypto {
         }
     }
 
-    // Checks if a subscription or payment over time is currently active
+    // Checks if a subscription or payment over time is currently active, returns true if active, false otherwise
     function isActive(address sender, address receiver) view public returns (bool) {
+        require(msg.sender == sender || msg.sender == receiver, "Access denied to third party");
         return accounts[sender].subscriptions[receiver].next_payment_time != 0;
+    }
+
+    // Returns metadata about a SubscriptionInfo struct:
+    // uint256 payment_amount; // agreed amount paid at each interval
+    // uint256 payment_available; // amount ready to be paid out to payee instantly
+    // uint256 total_paid; // total amount paid out from this subscription
+    // uint next_payment_time; // next timestamp that payment_amount should be deducted from balance and added to payment_available
+    // uint last_payment_time; // last time a payment was made from this subscription
+    // uint time_between_payments; // interval between payment times
+    function getData(address sender, address receiver) view public returns (uint256, uint256, uint256, uint, uint, uint) {
+        require(msg.sender == sender || msg.sender == receiver, "Access denied to third party");
+        return accounts[sender].subscriptions[receiver].payment_amount, accounts[sender].subscriptions[receiver].payment_available, accounts[sender].subscriptions[receiver].total_paid, accounts[sender].subscriptions[receiver].next_payment_time, accounts[sender].subscriptions[receiver].last_payment_time, accounts[sender].subscriptions[receiver].time_between_payments 
     }
 
     // Called by subscription seller to receive their payment
@@ -115,17 +129,13 @@ contract Subscrypto {
             if (accounts[sender].subscriptions[receiver].balance < accounts[sender].subscriptions[receiver].payment_amount) {
                 break;
             }
+            // Adjust next payment time
+            accounts[sender].subscriptions[receiver].next_payment_time += accounts[sender].subscriptions[receiver].time_between_payments;
             // Reduce balance by agreed amount
             accounts[sender].subscriptions[receiver].balance -= accounts[sender].subscriptions[receiver].payment_amount;
             // Increase total ETH available to collect by agreed amount
             accounts[sender].subscriptions[receiver].payment_available += accounts[sender].subscriptions[receiver].payment_amount;
-            // Adjust next payment time
-            accounts[sender].subscriptions[receiver].next_payment_time += accounts[sender].subscriptions[receiver].time_between_payments;
             // Repeat if necessary (maybe the subscription seller hasn't cashed out in a long time?)
         }
     }
 }
-
-
-
-
