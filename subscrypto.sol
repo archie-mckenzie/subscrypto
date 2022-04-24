@@ -40,7 +40,6 @@ contract Subscrypto {
             if (accounts[msg.sender].subscriptions[receiver].balance >= payment_amount) {
                 accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance - payment_amount;
                 accounts[msg.sender].subscriptions[receiver].payment_available = payment_amount;
-                accounts[msg.sender].subscriptions[receiver].last_payment_time = block.timestamp;
             }
             
         }
@@ -48,7 +47,7 @@ contract Subscrypto {
 
     // Add balance to an existing subscriptionInfo struct
     function addBalance(address receiver) public payable {
-        accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance + msg.value;
+        accounts[msg.sender].subscriptions[receiver].balance += msg.value;
     }
 
     // Allows a subscriber to withdraw their excess ETH and cancel their subscription 
