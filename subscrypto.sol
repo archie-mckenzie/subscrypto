@@ -16,7 +16,9 @@ contract Subscrypto {
         uint256 balance; // unused amount left in subscription 
         uint256 payment_amount; // agreed amount paid at each interval
         uint256 payment_available; // amount ready to be paid out to payee instantly
+        uint256 total_paid; // total amount paid out from this subscription
         uint next_payment_time; // next timestamp that payment_amount should be deducted from balance and added to payment_available
+        uint last_payment_time; // last time a payment was made from this subscription
         uint time_between_payments; // interval between payment times
     }
 
@@ -28,19 +30,19 @@ contract Subscrypto {
     // Map which stores Subscrypto Accounts for each user
     mapping(address => SubscryptoAccount) accounts;
     
-    SubscriptionInfo s; // Possible new SubscriptionInfo struct
     function newSubscription(address receiver, uint256 payment_amount, uint time_between_payments) public payable {
         // If subscription already exists, add balance to itinstead of creating new
         if (accounts[msg.sender].subscriptions[receiver].next_payment_time != 0) {
             addBalance(receiver);
         } 
         else { // If subscription does not exist, create new subscription
-            s = SubscriptionInfo(msg.sender, receiver, msg.value, payment_amount, 0, time_between_payments + block.timestamp, time_between_payments);
-            if (s.balance >= payment_amount) {
-                s.balance = s.balance - payment_amount;
-                s.payment_available = payment_amount;
+            accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, msg.value, payment_amount, 0, 0, time_between_payments + block.timestamp, 0, time_between_payments);
+            if (accounts[msg.sender].subscriptions[receiver].balance >= payment_amount) {
+                accounts[msg.sender].subscriptions[receiver].balance = accounts[msg.sender].subscriptions[receiver].balance - payment_amount;
+                accounts[msg.sender].subscriptions[receiver].payment_available = payment_amount;
+                accounts[msg.sender].subscriptions[receiver].last_payment_time = block.timestamp;
             }
-            accounts[msg.sender].subscriptions[receiver] = s;
+            
         }
     }
 
@@ -55,7 +57,8 @@ contract Subscrypto {
         payable(msg.sender).transfer(accounts[msg.sender].subscriptions[receiver].balance);
         payable(receiver).transfer(accounts[msg.sender].subscriptions[receiver].payment_available);
         // Reset the subscription
-        accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, 0, 0, 0, 0, 0);
+        delete(accounts[msg.sender].subscriptions[receiver])
+        // accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, 0, 0, 0, 0, 0);
     }
  
     // Withdraws a specified amount from 
@@ -92,12 +95,15 @@ contract Subscrypto {
             payable(sender).transfer(accounts[sender].subscriptions[msg.sender].balance);
             payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
             // Reset the subscription
-            accounts[sender].subscriptions[msg.sender] = SubscriptionInfo(sender, msg.sender, 0, 0, 0, 0, 0);
+            delete(accounts[sender].subscriptions[msg.sender])
+            // accounts[sender].subscriptions[msg.sender] = SubscriptionInfo(sender, msg.sender, 0, 0, 0, 0, 0);
             return false;
         }
         updatePaymentAvailable(sender, msg.sender); // update amount to pay immediately before payment has to be made
         require(accounts[sender].subscriptions[msg.sender].payment_available >= accounts[sender].subscriptions[msg.sender].payment_amount, "No ETH to be collected!");
         payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
+        accounts[msg.sender].subscriptions[receiver].total_paid += payment_available;
+        accounts[msg.sender].subscriptions[receiver].last_payment_time = block.timestamp;
         accounts[sender].subscriptions[msg.sender].payment_available = 0;
         return true;
     }
