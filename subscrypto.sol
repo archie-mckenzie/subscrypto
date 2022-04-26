@@ -41,13 +41,13 @@ contract Subscrypto {
             accounts[msg.sender].subscriptions[receiver].balance -= payment_amount;
             accounts[msg.sender].subscriptions[receiver].payment_available = payment_amount;
             accounts[msg.sender].subscriptions[receiver].last_payment_time = block.timestamp;
-            accounts[msg.sender].subscriptions[receiver].next_payment_time += accounts[sender].subscriptions[receiver].time_between_payments;
+            accounts[msg.sender].subscriptions[receiver].next_payment_time += accounts[msg.sender].subscriptions[receiver].time_between_payments;
         }
     }
 
     // Add balance to an existing subscriptionInfo struct
     function addBalance(address receiver) public payable {
-        require(isActive(msg.sender, receiver), "Subscription not active!")
+        require(isActive(msg.sender, receiver), "Subscription not active!");
         accounts[msg.sender].subscriptions[receiver].balance += msg.value;
     }
 
@@ -57,7 +57,7 @@ contract Subscrypto {
         payable(msg.sender).transfer(accounts[msg.sender].subscriptions[receiver].balance);
         payable(receiver).transfer(accounts[msg.sender].subscriptions[receiver].payment_available);
         // Reset the subscription
-        delete(accounts[msg.sender].subscriptions[receiver])
+        delete(accounts[msg.sender].subscriptions[receiver]);
         // accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, 0, 0, 0, 0, 0);
     }
  
@@ -97,7 +97,7 @@ contract Subscrypto {
     // uint time_between_payments; // interval between payment times
     function getData(address sender, address receiver) view public returns (uint256, uint256, uint256, uint, uint, uint) {
         require(msg.sender == sender || msg.sender == receiver, "Access denied to third party");
-        return accounts[sender].subscriptions[receiver].payment_amount, accounts[sender].subscriptions[receiver].payment_available, accounts[sender].subscriptions[receiver].total_paid, accounts[sender].subscriptions[receiver].next_payment_time, accounts[sender].subscriptions[receiver].last_payment_time, accounts[sender].subscriptions[receiver].time_between_payments 
+        return (accounts[sender].subscriptions[receiver].payment_amount, accounts[sender].subscriptions[receiver].payment_available, accounts[sender].subscriptions[receiver].total_paid, accounts[sender].subscriptions[receiver].next_payment_time, accounts[sender].subscriptions[receiver].last_payment_time, accounts[sender].subscriptions[receiver].time_between_payments);
     }
 
     // Called by subscription seller to receive their payment
@@ -108,15 +108,15 @@ contract Subscrypto {
             payable(sender).transfer(accounts[sender].subscriptions[msg.sender].balance);
             payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
             // Reset the subscription
-            delete(accounts[sender].subscriptions[msg.sender])
+            delete(accounts[sender].subscriptions[msg.sender]);
             // accounts[sender].subscriptions[msg.sender] = SubscriptionInfo(sender, msg.sender, 0, 0, 0, 0, 0);
             return false;
         }
         updatePaymentAvailable(sender, msg.sender); // update amount to pay immediately before payment has to be made
         require(accounts[sender].subscriptions[msg.sender].payment_available >= accounts[sender].subscriptions[msg.sender].payment_amount, "No ETH to be collected!");
         payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
-        accounts[msg.sender].subscriptions[receiver].total_paid += payment_available;
-        accounts[msg.sender].subscriptions[receiver].last_payment_time = block.timestamp;
+        accounts[sender].subscriptions[msg.sender].total_paid += accounts[sender].subscriptions[msg.sender].payment_available;
+        accounts[sender].subscriptions[msg.sender].last_payment_time = block.timestamp;
         accounts[sender].subscriptions[msg.sender].payment_available = 0;
         return true;
     }
