@@ -17,7 +17,7 @@ For example, if we had a SubscriptionInfo struct which looked like this:
         balance = 100 ETH
         payment_amount = 10 ETH
         payment_available = 20 ETH
-        total_paid = 0
+        total_paid = 0 ETH
         next_payment_time = now + 26 days
         last_payment_time = now - 4 days
         time_between_payments = 1 month
