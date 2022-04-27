@@ -1,0 +1,25 @@
+{
+  "name": "cos495project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gist.github.com/45bb7bb39fea940cd45a5e88759f58a5.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gist.github.com/45bb7bb39fea940cd45a5e88759f58a5"
+  },
+  "homepage": "https://gist.github.com/45bb7bb39fea940cd45a5e88759f58a5",
+  "dependencies": {
+    "web3": "^1.7.3"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.0.24"
+  }
+}

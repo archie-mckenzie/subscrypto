@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Subscrypto</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <script src='node_modules/web3/dist/web3.min.js'></script>
+    <!-- <link href="/dist/output.css" rel="stylesheet"> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+  <div class="bg-gradient-to-r from-cyan-500 to-red-400 min-h-screen ...">
+    <nav class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 bg-gradient-to-r from-cyan-600 to-red-500 ">
+        <div class="container flex flex-wrap justify-between items-center mx-auto">
+        <a href="https://archiemckenzie.com/" class="flex items-center">
+            <img src="images/logo.png" class="mr-3 h-6 sm:h-9" alt="Subscrypto Logo" />
+            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Subscrypto</span>
+        </a>
+        <div class="justify-between items-center w-full md:flex md:w-auto md:order-1" id="mobile-menu-4">
+            <ul class="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
+              <li>
+                <div class="flex md:order-2">
+                    <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Connect Wallet</button>
+                    <button data-collapse-toggle="mobile-menu-4" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="mobile-menu-4" aria-expanded="false">
+                    <span class="sr-only">connect wallet</span>
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+                    <svg class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                  </button>
+                </div>
+              </li>
+              <li>
+                <div class="flex md:order-2">
+                    <button type="button" class="text-black bg-white-700 hover:bg-white-800 md:hover:text-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0 dark:bg-white-600 dark:hover:bg-white-700 dark:focus:ring-blue-800">About</button>
+                    <button data-collapse-toggle="mobile-menu-4" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="mobile-menu-4" aria-expanded="false">
+                    <span class="sr-only">connect wallet</span>
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+                    <svg class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </div>
+          </div>
+    
+      </nav>
+      <br> <br>
+      
+      <div class="flex justify-center items-center ">
+          <div class="lg:w-2/5 w-full lg:pr-3">
+              <div class="bg-gray-200 rounded-xl p-6 shadow-md">
+                  <h2 class="text-2xl font-bold mb-2">New Subscrypto</h2>
+                  <br>
+                  <form class="w-full max-w-lg">
+                    <div class="flex flex-wrap -mx-3 mb-6">
+                      <div class="w-full px-3">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-wallet">
+                          Wallet address
+                        </label>
+                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="text" placeholder="XXXXXXXXXXXXXXXXXXXXX">
+                      </div>
+                    </div>
+                    <div class="flex flex-wrap -mx-3 mb-2">
+                      <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-city">
+                          Amount
+                        </label>
+                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" placeholder="1.0 ETH">
+                      </div>
+                      <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+                          Recurrance
+                        </label>
+                        <div class="relative">
+                          <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
+                            <option>1 Month</option>
+                            <option>Missouri</option>
+                            <option>Texas</option>
+                          </select>
+                          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="flex items-center justify-center">
+                      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+                        Start Subscrypto
+                      </button>
+                    </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+
+    
+    <!-- Web 3 Demo -->
+    <!-- <br > -->
+    <!-- <button onclick="printCoolNumber();">Print Cool Number</button>
+    <button onclick="changeCoolNumber();">Change Cool Number</button> -->
+    <!-- <br /><br /> -->
+    <!-- Status: <span id="status">Loading...</span> -->
+
+    <script type="text/javascript">
+        // async function loadWeb3() {
+            
+        //     if (window.ethereum) {
+        //         window.web3 = new Web3(window.ethereum);
+        //         window.ethereum.enable();
+        //     }
+        //     console.log(window.ethereum)
+        // }
+
+        // async function loadContract() {
+        //     return await new window.web3.eth.Contract(
+        //         [
+        //             {
+        //             "inputs": [
+        //                 {
+        //                 "internalType": "uint256",
+        //                 "name": "",
+        //                 "type": "uint256"
+        //                 }
+        //             ],
+        //             "name": "statements",
+        //             "outputs": [
+        //                 {
+        //                 "internalType": "string",
+        //                 "name": "",
+        //                 "type": "string"
+        //                 }
+        //             ],
+        //             "stateMutability": "view",
+        //             "type": "function",
+        //             "constant": true
+        //             },
+        //             {
+        //             "inputs": [
+        //                 {
+        //                 "internalType": "string",
+        //                 "name": "_statement",
+        //                 "type": "string"
+        //                 }
+        //             ],
+        //             "name": "appendStatement",
+        //             "outputs": [],
+        //             "stateMutability": "nonpayable",
+        //             "type": "function"
+        //             },
+        //             {
+        //             "inputs": [],
+        //             "name": "getStatements",
+        //             "outputs": [
+        //                 {
+        //                 "internalType": "string[]",
+        //                 "name": "",
+        //                 "type": "string[]"
+        //                 }
+        //             ],
+        //             "stateMutability": "view",
+        //             "type": "function",
+        //             "constant": true
+        //             }
+        //         ], '0x8B2910737171f599712CAf99fEB9a39EECeE0b50');
+        // }
+
+        // async function printCoolNumber() {
+        //     updateStatus('fetching Cool Number...');
+        //     const coolStatement = await window.contract.methods.getStatements().call();
+        //     console.log(coolStatement)
+        //     updateStatus(`coolNumber: ${coolStatement}`);
+        // }
+
+        // async function getCurrentAccount() {
+        //     const accounts = await window.web3.eth.getAccounts();
+        //     return accounts[0];r
+        // }
+
+        // async function changeCoolNumber() {
+        //     const value = "World"
+        //     updateStatus(`Updating coolNumber with ${value}`);
+        //     const account = await getCurrentAccount();
+        //     const coolNumber = await window.contract.methods.appendStatement(value).send({ from: account });
+        //     updateStatus('Updated.');
+        // }
+
+        // async function load() {
+        //     await loadWeb3();
+        //     window.contract = await loadContract();
+        //     updateStatus('Ready!');
+        // }
+
+        // function updateStatus(status) {
+        //     const statusEl = document.getElementById('status');
+        //     statusEl.innerHTML = status;
+        //     console.log(status);
+        // }
+
+        // load();
+    </script>
+</body>
+
+</html>
