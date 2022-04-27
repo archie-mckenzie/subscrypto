@@ -9,6 +9,27 @@ contract Subscrypto {
     uint constant year = 365.25 days;
     uint constant month = year / 12;
 
+    event SubscriptionActivated (
+        address sender,
+        address receiver,
+        uint time_activated,
+        uint time_between_payments
+    );
+
+    event SubscriptionCancelled (
+        address sender,
+        address receiver,
+        uint time_cancelled,
+        uint256 amount_withdrawn
+    );
+
+    event BalanceWithdrawal (
+        address sender,
+        address receiver,
+        uint time_withdrawn,
+        uint256 amount_withdrawn
+    );
+
     // SubscriptionInfo struct
     struct SubscriptionInfo {
         address sender; // payer of subscription 
@@ -42,6 +63,8 @@ contract Subscrypto {
             accounts[msg.sender].subscriptions[receiver].payment_available = payment_amount;
             accounts[msg.sender].subscriptions[receiver].last_payment_time = block.timestamp;
             accounts[msg.sender].subscriptions[receiver].next_payment_time += accounts[msg.sender].subscriptions[receiver].time_between_payments;
+            // Log the new subscription
+            emit SubscriptionActivated(msg.sender, receiver, block.timestamp, time_between_payments);
         }
     }
 
@@ -53,6 +76,9 @@ contract Subscrypto {
 
     // Allows a subscriber to withdraw their excess ETH and cancel their subscription 
     function cancelSubscription(address receiver) public payable {
+        require(isActive(msg.sender, receiver), "Subscription not active");
+        // Log the cancelled subscription
+        emit SubscriptionCancelled(msg.sender, receiver, block.timestamp, accounts[msg.sender].subscriptions[receiver].balance);
         // Transfer money to appropriate parties
         payable(msg.sender).transfer(accounts[msg.sender].subscriptions[receiver].balance);
         payable(receiver).transfer(accounts[msg.sender].subscriptions[receiver].payment_available);
@@ -66,6 +92,7 @@ contract Subscrypto {
         require(accounts[msg.sender].subscriptions[receiver].balance >= amount, "Balance too low!");
         accounts[msg.sender].subscriptions[receiver].balance -= amount;
         payable(msg.sender).transfer(amount);
+        emit BalanceWithdrawal(msg.sender, receiver, block.timestamp, amount);
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
             cancelSubscription(receiver);
         }
@@ -84,7 +111,6 @@ contract Subscrypto {
 
     // Checks if a subscription or payment over time is currently active, returns true if active, false otherwise
     function isActive(address sender, address receiver) view public returns (bool) {
-        require(msg.sender == sender || msg.sender == receiver, "Access denied to third party");
         return accounts[sender].subscriptions[receiver].next_payment_time != 0;
     }
 
