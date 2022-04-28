@@ -9,9 +9,11 @@ contract Subscrypto {
     uint constant year = 365.25 days;
     uint constant month = year / 12;
 
-    event SubscriptionAdded (
+    event SubscriptionData (
         address sender,
         address receiver,
+        uint256 balance,
+        uint256 payment_amount,
         uint time_activated,
         uint time_between_payments
     );
@@ -41,6 +43,7 @@ contract Subscrypto {
         uint next_payment_time; // next timestamp that payment_amount should be deducted from balance and added to payment_available
         uint last_payment_time; // last time a payment was made from this subscription
         uint time_between_payments; // interval between payment times
+        uint time_activated; // time the subscription was created
     }
 
     // Subscrypto Account which contains all subscriptions of a certain user
@@ -58,13 +61,13 @@ contract Subscrypto {
         } 
         else { // If subscription does not exist, create new subscription
             require(msg.value >= payment_amount, "Not enough ETH for first payment!");
-            accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, msg.value, payment_amount, 0, 0, time_between_payments + block.timestamp, 0, time_between_payments);
+            accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, msg.value, payment_amount, 0, 0, time_between_payments + block.timestamp, 0, time_between_payments, block.timestamp);
             accounts[msg.sender].subscriptions[receiver].balance -= payment_amount;
             accounts[msg.sender].subscriptions[receiver].payment_available = payment_amount;
             accounts[msg.sender].subscriptions[receiver].last_payment_time = block.timestamp;
             accounts[msg.sender].subscriptions[receiver].next_payment_time += accounts[msg.sender].subscriptions[receiver].time_between_payments;
             // Log the new subscription
-            emit SubscriptionAdded(msg.sender, receiver, block.timestamp, time_between_payments);
+            emit SubscriptionData(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance, accounts[msg.sender].subscriptions[receiver].payment_amount, accounts[msg.sender].subscriptions[receiver].time_activated, accounts[msg.sender].subscriptions[receiver].time_between_payments);
         }
     }
 
@@ -84,7 +87,6 @@ contract Subscrypto {
         payable(receiver).transfer(accounts[msg.sender].subscriptions[receiver].payment_available);
         // Reset the subscription
         delete(accounts[msg.sender].subscriptions[receiver]);
-        // accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, 0, 0, 0, 0, 0);
     }
  
     // Withdraws a specified amount from subscription plan
@@ -122,9 +124,9 @@ contract Subscrypto {
     // uint next_payment_time; // next timestamp that payment_amount should be deducted from balance and added to payment_available
     // uint last_payment_time; // last time a payment was made from this subscription
     // uint time_between_payments; // interval between payment times
-    function getData(address sender, address receiver) view public returns (uint256, uint256, uint256, uint, uint, uint) {
+    function getMetadata(address sender, address receiver) view public returns (uint256, uint256, uint256, uint, uint, uint) {
         require(msg.sender == sender || msg.sender == receiver, "Access denied to third party");
-        return (accounts[sender].subscriptions[receiver].payment_amount, accounts[sender].subscriptions[receiver].payment_available, accounts[sender].subscriptions[receiver].total_paid, accounts[sender].subscriptions[receiver].next_payment_time, accounts[sender].subscriptions[receiver].last_payment_time, accounts[sender].subscriptions[receiver].time_between_payments);
+        emit SubscriptionData(sender, receiver, accounts[sender].subscriptions[receiver].balance, accounts[sender].subscriptions[receiver].payment_amount, accounts[sender].subscriptions[receiver].time_activated, accounts[sender].subscriptions[receiver].time_between_payments);
     }
 
     // Called by subscription seller to receive their payment
@@ -136,7 +138,6 @@ contract Subscrypto {
             payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
             // Reset the subscription
             delete(accounts[sender].subscriptions[msg.sender]);
-            // accounts[sender].subscriptions[msg.sender] = SubscriptionInfo(sender, msg.sender, 0, 0, 0, 0, 0);
             return false;
         }
         updatePaymentAvailable(sender, msg.sender); // update amount to pay immediately before payment has to be made
