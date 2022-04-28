@@ -115,6 +115,7 @@ contract Subscrypto {
     // Emits attributes of a SubscriptionInfo struct
     function getData(address sender, address receiver) public {
         require(msg.sender == sender || msg.sender == receiver, "Access denied to third party");
+        require(isActive(sender, receiver), "Subscription not active!");
         emit SubscriptionData(sender, receiver, accounts[sender].subscriptions[receiver].balance, accounts[sender].subscriptions[receiver].payment_amount, accounts[sender].subscriptions[receiver].time_activated, accounts[sender].subscriptions[receiver].time_between_payments);
     }
 
