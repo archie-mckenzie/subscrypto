@@ -110,7 +110,7 @@ contract Subscrypto {
 
     // Checks if a subscription or payment over time is currently active, returns true if active, false otherwise
     function isActive(address sender, address receiver) view public returns (bool) {
-        return accounts[sender].subscriptions[receiver].time_between_payments != 0;
+        return accounts[sender].subscriptions[receiver].next_payment_time != 0;
     }
 
     // Emits attributes of a SubscriptionInfo struct

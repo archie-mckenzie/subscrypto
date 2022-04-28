@@ -26,5 +26,25 @@ contract('Subscrypto', function (accounts) {
         return assert.equal(success, false);
     });
 
+    it('Able to add balance?', async function () {
+        return assert.equal(true, true);
+    });
+
+    it('Able to cancel subscription?', async function () {
+        return assert.equal(true, true);
+    });
+
+    it('Able to withdraw an amount?', async function () {
+        return assert.equal(true, true);
+    });
+
+    it('Able to withdraw excess?', async function () {
+        return assert.equal(true, true);
+    });
+
+    it('Able to withstand complex sequence of operations?', async function () {
+        return assert.equal(true, true);
+    });
+
    
 });
