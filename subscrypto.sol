@@ -9,6 +9,9 @@ contract Subscrypto {
     uint constant year = 365.25 days;
     uint constant month = year / 12;
 
+    // Data about a subscription
+    // Emitted on creation of a new subscription
+    // Or on request of one of the two parties involved (sender or receiver)
     event SubscriptionData (
         address sender,
         address receiver,
@@ -18,13 +21,9 @@ contract Subscrypto {
         uint time_between_payments
     );
 
+    // Announcement of a cancelled subscription
+    // Emitted when cancelSubscription() is called
     event SubscriptionCancelled (
-        address sender,
-        address receiver,
-        uint256 amount_withdrawn
-    );
-
-    event WithdrawalMade (
         address sender,
         address receiver,
         uint256 amount_withdrawn
@@ -92,7 +91,6 @@ contract Subscrypto {
         require(accounts[msg.sender].subscriptions[receiver].balance >= amount, "Balance too low!");
         accounts[msg.sender].subscriptions[receiver].balance -= amount;
         payable(msg.sender).transfer(amount);
-        emit WithdrawalMade(msg.sender, receiver, amount);
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
             cancelSubscription(receiver);
         }
@@ -104,7 +102,6 @@ contract Subscrypto {
         uint256 remainder = accounts[msg.sender].subscriptions[receiver].balance % accounts[msg.sender].subscriptions[receiver].payment_amount;
         accounts[msg.sender].subscriptions[receiver].balance -= remainder;
         payable(msg.sender).transfer(remainder);
-        emit WithdrawalMade(msg.sender, receiver, remainder);
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
             cancelSubscription(receiver);
         }
