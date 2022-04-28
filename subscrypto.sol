@@ -9,7 +9,7 @@ contract Subscrypto {
     uint constant year = 365.25 days;
     uint constant month = year / 12;
 
-    event SubscriptionActivated (
+    event SubscriptionAdded (
         address sender,
         address receiver,
         uint time_activated,
@@ -23,7 +23,7 @@ contract Subscrypto {
         uint256 amount_withdrawn
     );
 
-    event BalanceWithdrawal (
+    event WithdrawalMade (
         address sender,
         address receiver,
         uint time_withdrawn,
@@ -64,7 +64,7 @@ contract Subscrypto {
             accounts[msg.sender].subscriptions[receiver].last_payment_time = block.timestamp;
             accounts[msg.sender].subscriptions[receiver].next_payment_time += accounts[msg.sender].subscriptions[receiver].time_between_payments;
             // Log the new subscription
-            emit SubscriptionActivated(msg.sender, receiver, block.timestamp, time_between_payments);
+            emit SubscriptionAdded(msg.sender, receiver, block.timestamp, time_between_payments);
         }
     }
 
@@ -92,7 +92,7 @@ contract Subscrypto {
         require(accounts[msg.sender].subscriptions[receiver].balance >= amount, "Balance too low!");
         accounts[msg.sender].subscriptions[receiver].balance -= amount;
         payable(msg.sender).transfer(amount);
-        emit BalanceWithdrawal(msg.sender, receiver, block.timestamp, amount);
+        emit WithdrawalMade(msg.sender, receiver, block.timestamp, amount);
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
             cancelSubscription(receiver);
         }
@@ -104,7 +104,7 @@ contract Subscrypto {
         uint256 remainder = accounts[msg.sender].subscriptions[receiver].balance % accounts[msg.sender].subscriptions[receiver].payment_amount;
         accounts[msg.sender].subscriptions[receiver].balance -= remainder;
         payable(msg.sender).transfer(remainder);
-        emit BalanceWithdrawal(msg.sender, receiver, block.timestamp, remainder);
+        emit WithdrawalMade(msg.sender, receiver, block.timestamp, remainder);
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
             cancelSubscription(receiver);
         }
