@@ -21,14 +21,12 @@ contract Subscrypto {
     event SubscriptionCancelled (
         address sender,
         address receiver,
-        uint time_cancelled,
         uint256 amount_withdrawn
     );
 
     event WithdrawalMade (
         address sender,
         address receiver,
-        uint time_withdrawn,
         uint256 amount_withdrawn
     );
 
@@ -81,7 +79,7 @@ contract Subscrypto {
     function cancelSubscription(address receiver) public payable {
         require(isActive(msg.sender, receiver), "Subscription not active");
         // Log the cancelled subscription
-        emit SubscriptionCancelled(msg.sender, receiver, block.timestamp, accounts[msg.sender].subscriptions[receiver].balance);
+        emit SubscriptionCancelled(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance);
         // Transfer money to appropriate parties
         payable(msg.sender).transfer(accounts[msg.sender].subscriptions[receiver].balance);
         payable(receiver).transfer(accounts[msg.sender].subscriptions[receiver].payment_available);
@@ -94,7 +92,7 @@ contract Subscrypto {
         require(accounts[msg.sender].subscriptions[receiver].balance >= amount, "Balance too low!");
         accounts[msg.sender].subscriptions[receiver].balance -= amount;
         payable(msg.sender).transfer(amount);
-        emit WithdrawalMade(msg.sender, receiver, block.timestamp, amount);
+        emit WithdrawalMade(msg.sender, receiver, amount);
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
             cancelSubscription(receiver);
         }
@@ -106,7 +104,7 @@ contract Subscrypto {
         uint256 remainder = accounts[msg.sender].subscriptions[receiver].balance % accounts[msg.sender].subscriptions[receiver].payment_amount;
         accounts[msg.sender].subscriptions[receiver].balance -= remainder;
         payable(msg.sender).transfer(remainder);
-        emit WithdrawalMade(msg.sender, receiver, block.timestamp, remainder);
+        emit WithdrawalMade(msg.sender, receiver, remainder);
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
             cancelSubscription(receiver);
         }
@@ -117,14 +115,14 @@ contract Subscrypto {
         return accounts[sender].subscriptions[receiver].time_activated != 0;
     }
 
-    // Returns metadata about a SubscriptionInfo struct:
+    // Emits attributes of a SubscriptionInfo struct:
     // uint256 payment_amount; // agreed amount paid at each interval
     // uint256 payment_available; // amount ready to be paid out to payee instantly
     // uint256 total_paid; // total amount paid out from this subscription
     // uint next_payment_time; // next timestamp that payment_amount should be deducted from balance and added to payment_available
     // uint last_payment_time; // last time a payment was made from this subscription
     // uint time_between_payments; // interval between payment times
-    function getMetadata(address sender, address receiver) public {
+    function getData(address sender, address receiver) public {
         require(msg.sender == sender || msg.sender == receiver, "Access denied to third party");
         emit SubscriptionData(sender, receiver, accounts[sender].subscriptions[receiver].balance, accounts[sender].subscriptions[receiver].payment_amount, accounts[sender].subscriptions[receiver].time_activated, accounts[sender].subscriptions[receiver].time_between_payments);
     }
