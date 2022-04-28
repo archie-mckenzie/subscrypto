@@ -99,6 +99,7 @@ contract Subscrypto {
     // Withdraws any excess ETH being held in escrow by the contract
     // Cancels subscription if balance falls below payment_amount
     function withdrawExcess(address receiver) public payable {
+        require(isActive(msg.sender, receiver), "Subscription not active!");
         uint256 remainder = accounts[msg.sender].subscriptions[receiver].balance % accounts[msg.sender].subscriptions[receiver].payment_amount;
         accounts[msg.sender].subscriptions[receiver].balance -= remainder;
         payable(msg.sender).transfer(remainder);
@@ -121,6 +122,7 @@ contract Subscrypto {
 
     // Called by subscription seller to receive their payment
     function receiveSubscription(address sender) public returns (bool) {
+        require(isActive(sender, msg.sender), "Subscription not active!");
         // Cancel subscription if balance is not enough
         if (accounts[sender].subscriptions[msg.sender].balance < accounts[sender].subscriptions[msg.sender].payment_amount) {
             // Transfer money to appropriate parties
@@ -140,7 +142,7 @@ contract Subscrypto {
     }
 
     // Update the payment available to collect
-    function updatePaymentAvailable(address sender, address receiver) public {
+    function updatePaymentAvailable(address sender, address receiver) private {
         while (accounts[sender].subscriptions[receiver].next_payment_time <= block.timestamp) {
             require(accounts[sender].subscriptions[receiver].next_payment_time != 0, "Subscription plan does not exist!");
             // Check that there is enough balance
