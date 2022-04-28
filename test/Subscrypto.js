@@ -23,8 +23,7 @@ contract('Subscrypto', function (accounts) {
         let me = accounts[0];
         let you = accounts[1];
         let success = await subscrypto.isActive(me, you);
-        assert.equal(success, false);
-        return;
+        return assert.equal(success, false);
     });
 
    
