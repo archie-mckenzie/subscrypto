@@ -2,7 +2,7 @@ const Subscrypto = artifacts.require('Subscrypto.sol');
 
 contract('Subscrypto', function (accounts) {
 
-    it('Can a new subscription be activated?', async function () {
+    it('Able to activate new subscription?', async function () {
         const subscrypto = await Subscrypto.new();
         let me = accounts[0];
         let you = accounts[1];
@@ -10,7 +10,7 @@ contract('Subscrypto', function (accounts) {
         return assert(subscrypto.isActive(me, you));
     });
 
-    it('Can a subscription pay out?', async function () {
+    it('Able to pay out?', async function () {
         const subscrypto = await Subscrypto.new();
         let me = accounts[0];
         let you = accounts[1];
@@ -18,7 +18,7 @@ contract('Subscrypto', function (accounts) {
         return assert(subscrypto.receiveSubscription(me, {from: you}));
     });
 
-    it('Can it return a function that doesnt exist?', async function () {
+    it('Able to detect a function that doesn\'t exist?', async function () {
         const subscrypto = await Subscrypto.new();
         let me = accounts[0];
         let you = accounts[1];
