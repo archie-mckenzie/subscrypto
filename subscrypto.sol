@@ -114,7 +114,7 @@ contract Subscrypto {
 
     // Checks if a subscription or payment over time is currently active, returns true if active, false otherwise
     function isActive(address sender, address receiver) view public returns (bool) {
-        return accounts[sender].subscriptions[receiver].next_payment_time != 0;
+        return accounts[sender].subscriptions[receiver].time_activated != 0;
     }
 
     // Returns metadata about a SubscriptionInfo struct:
@@ -124,7 +124,7 @@ contract Subscrypto {
     // uint next_payment_time; // next timestamp that payment_amount should be deducted from balance and added to payment_available
     // uint last_payment_time; // last time a payment was made from this subscription
     // uint time_between_payments; // interval between payment times
-    function getMetadata(address sender, address receiver) view public returns (uint256, uint256, uint256, uint, uint, uint) {
+    function getMetadata(address sender, address receiver) public {
         require(msg.sender == sender || msg.sender == receiver, "Access denied to third party");
         emit SubscriptionData(sender, receiver, accounts[sender].subscriptions[receiver].balance, accounts[sender].subscriptions[receiver].payment_amount, accounts[sender].subscriptions[receiver].time_activated, accounts[sender].subscriptions[receiver].time_between_payments);
     }
