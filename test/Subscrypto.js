@@ -6,7 +6,7 @@ contract('Subscrypto', function (accounts) {
         const subscrypto = await Subscrypto.new();
         let me = accounts[0];
         let you = accounts[1];
-        subscrypto.newSubscription(you, 1, 10, {value: 100});
+        await subscrypto.newSubscription(you, 1, 10, {value: 100});
         return assert(subscrypto.isActive(me, you));
     });
 
@@ -14,7 +14,7 @@ contract('Subscrypto', function (accounts) {
         const subscrypto = await Subscrypto.new();
         let me = accounts[0];
         let you = accounts[1];
-        subscrypto.newSubscription(you, 1, 10, {value: 100});
+        await subscrypto.newSubscription(you, 1, 10, {value: 100});
         return assert(subscrypto.receiveSubscription(me, {from: you}));
     }); 
 
@@ -27,7 +27,14 @@ contract('Subscrypto', function (accounts) {
     });
 
     it('Able to add balance?', async function () {
-        return assert.equal(true, true);
+        const subscrypto = await Subscrypto.new();
+        let me = accounts[0];
+        let you = accounts[1];
+        let addVal = 100;
+        await subscrypto.newSubscription(you, 1, 10, {value: 100});
+        await subscrypto.addBalance(you, {value: addVal});
+        let bal = (await subscrypto.getData.call(me,you))['2'].toNumber();
+        return assert.equal(bal, 99+addVal);
     });
 
     it('Able to cancel subscription?', async function () {
