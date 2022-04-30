@@ -52,7 +52,7 @@ contract Subscrypto {
     mapping(address => SubscryptoAccount) accounts;
     
     function newSubscription(address receiver, uint256 payment_amount, uint time_between_payments) public payable {
-        // If subscription already exists, add balance to itinstead of creating new
+        // If subscription already exists, add balance to it instead of creating new
         if (accounts[msg.sender].subscriptions[receiver].next_payment_time != 0) {
             addBalance(receiver);
         } 
