@@ -1,0 +1,28 @@
+Deploying 'Subscrypto'
+   ----------------------
+   > transaction hash:    0xbecd33cfdfaa62fdb1692169c596f947bd68bae247d729fd11239bbdcd71eecf
+   > Blocks: 1            Seconds: 8
+   > contract address:    0x1adAA29F7136285c5A1b1adD9D5452eBFBd23C15
+   > block number:        12228689
+   > block timestamp:     1651318178
+   > account:             0xDC431c6314126Ba33a1B0bC15Fd12dE319B84A82
+   > balance:             1.230988200923170627
+   > gas used:            2651174 (0x287426)
+   > gas price:           22.788415639 gwei
+   > value sent:          0 ETH
+   > total cost:          0.060416055043310186 ETH
+
+   Pausing for 2 confirmations...
+
+   -------------------------------
+   > confirmation number: 1 (block: 12228692)
+   > confirmation number: 2 (block: 12228693)
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:     0.060416055043310186 ETH
+
+Summary
+=======
+> Total deployments:   2
+> Final cost:          0.067860945763474488 ETH
