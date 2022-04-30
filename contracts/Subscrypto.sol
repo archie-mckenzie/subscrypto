@@ -3,12 +3,6 @@
 pragma solidity >=0.6.0 <0.9.0;
 
 contract Subscrypto {
-    // Constants for time periods
-    uint constant day = 24 hours;
-    uint constant week = 1 weeks;
-    uint constant year = 365.25 days;
-    uint constant month = year / 12;
-
     // Data about a subscription
     // Emitted on creation of a new subscription
     // Or on request of one of the two parties involved (sender or receiver)
