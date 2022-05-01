@@ -1,101 +1,162 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Subscrypto</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <script src='node_modules/web3/dist/web3.min.js'></script>
+    <script src="node_modules/web3/dist/web3.min.js"></script>
     <!-- <link href="/dist/output.css" rel="stylesheet"> -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script
-    src="https://code.jquery.com/jquery-3.3.1.js"
-    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-    crossorigin="anonymous">
+      src="https://code.jquery.com/jquery-3.3.1.js"
+      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(function () {
+        $("#header").load("header.html");
+      });
     </script>
-    <script> 
-    $(function(){
-      $("#header").load("header.html"); 
-    });
-    </script>   
-</head>
+  </head>
 
-<body>
-  <div class="bg-gradient-to-r from-cyan-400 to-red-400 min-h-screen ">
-  <div id="header"></div>
-  <br>
-  <br>
-  <!-- New Subscription Card -->
-  <div class="flex justify-center items-center ">
-    <div class="lg:w-2/5 w-full lg:pr-3">
-      <div class="bg-gray-200 rounded-xl p-6 shadow-md">
-        <h2 class="text-2xl font-bold mb-2">New Subscription</h2>
-        <br>      
-        <form class="w-full max-w-lg">
-          <div class="flex flex-wrap -mx-3 ">
-            <div class="w-full px-3">
-              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-wallet">
-                          Wallet address
-              </label>
-              <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="text" placeholder="XXXXXXXXXXXXXXXXXXXXX">
-            </div>
-          </div> 
-          <div class="flex flex-wrap -mx-3 mb-2">
-            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-city">
-                Amount
-              </label>
-              <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" placeholder="X ETH">
-            </div>
-            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-city">
-                Initial Balance
-              </label>
-              <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" placeholder="X ETH">
-            </div>
-          </div>
-          <div class="flex flex-wrap -mx-3">
-            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
-                Recurrance
-              </label>
-              <div class="relative">
-                <div class="flex flex-row space-x-4">
-                  <select id="currency" name="currency" class="focus:ring-indigo-500 focus:border-indigo-500 h-full border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md">
-                    <option>0 Weeks</option>
-                    <option>1 Week</option>
-                    <option>2 Weeks</option>
-                  </select>
-                  <select id="currency" name="currency" class="focus:ring-indigo-500 focus:border-indigo-500 h-full border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md">
-                    <option>0 Months</option>
-                    <option>1 Month</option>
-                    <option>2 Months</option>
-                  </select>
-                  <select id="currency" name="currency" class="focus:ring-indigo-500 focus:border-indigo-500 h-full border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md">
-                    <option>0 seconds</option>
-                    <option>1 second</option>
-                    <option>2 seconds</option>
-                  </select>
+  <body>
+    <div class="bg-gradient-to-r from-cyan-400 to-red-400 min-h-screen">
+      <div id="header"></div>
+      <br />
+      <br />
+      <!-- New Subscription Card -->
+      <div class="flex justify-center items-center">
+        <div class="lg:w-2/5 w-full lg:pr-3">
+          <div class="bg-gray-200 rounded-xl p-6 shadow-md">
+            <h2 class="text-2xl font-bold mb-2">New Subscription</h2>
+            <br />
+            <form class="w-full max-w-lg">
+              <div class="flex flex-wrap -mx-3">
+                <div class="w-full px-3">
+                  <label
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    for="grid-wallet"
+                  >
+                    Wallet address
+                  </label>
+                  <input
+                    id="receiverWallet"
+                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    id="grid-password"
+                    type="text"
+                    placeholder="XXXXXXXXXXXXXXXXXXXXX"
+                  />
                 </div>
               </div>
-            </div>
+              <div class="flex flex-wrap -mx-3 mb-2">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                  <label
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    for="grid-city"
+                  >
+                    Amount
+                  </label>
+                  <input
+                    id="payment_amount"
+                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    id="grid-city"
+                    type="text"
+                    placeholder="X ETH"
+                  />
+                </div>
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                  <label
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    for="grid-city"
+                  >
+                    Initial Balance
+                  </label>
+                  <input
+                    id="init_val"
+                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    id="grid-city"
+                    type="text"
+                    placeholder="X ETH"
+                  />
+                </div>
+              </div>
+              <div class="flex flex-wrap -mx-3">
+                <div class="w-full px-3 mb-6 md:mb-0">
+                  <label
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    for="grid-state"
+                  >
+                    Recurrance
+                  </label>
+                  <div class="flex flex-wrap -mx-3 mb-2">
+                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                      <label
+                        class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+                        for="grid-city"
+                      >
+                        Weeks
+                      </label>
+                      <input
+                        id="weeks"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        id="grid-city"
+                        type="text"
+                        placeholder="0"
+                      />
+                    </div>
+                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                      <label
+                        class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+                        for="grid-city"
+                      >
+                        Months
+                      </label>
+                      <input
+                        id="months"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        id="grid-city"
+                        type="text"
+                        placeholder="0"
+                      />
+                    </div>
+                    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                      <label
+                        class="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+                        for="grid-city"
+                      >
+                        Seconds
+                      </label>
+                      <input
+                        id="secs"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        id="grid-city"
+                        type="text"
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center justify-center">
+                <button
+                  type="button"
+                  id="newSubscrypto"
+                  class="bg-gradient-to-r from-cyan-400 to-red-400 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full"
+                >
+                  Create Subscrypto
+                </button>
+              </div>
+            </form>
           </div>
-          <br>
-          <div class="flex items-center justify-center">
-            <button class="bg-gradient-to-r from-cyan-400 to-red-400 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full">
-              Create Subscrypto
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
+      <br />
+      <br />
+      <div id="mobileDeviceWarning"></div>
+      <div class="alert" id="installAlert"></div>
     </div>
-  </div>
-  <br>
-  <br>
-
-
 
     <!-- Web 3 Demo -->
     <!-- <br > -->
@@ -103,104 +164,8 @@
     <button onclick="changeCoolNumber();">Change Cool Number</button> -->
     <!-- <br /><br /> -->
     <!-- Status: <span id="status">Loading...</span> -->
-
     <script type="text/javascript">
-        // async function loadWeb3() {
-            
-        //     if (window.ethereum) {
-        //         window.web3 = new Web3(window.ethereum);
-        //         window.ethereum.enable();
-        //     }
-        //     console.log(window.ethereum)
-        // }
-
-        // async function loadContract() {
-        //     return await new window.web3.eth.Contract(
-        //         [
-        //             {
-        //             "inputs": [
-        //                 {
-        //                 "internalType": "uint256",
-        //                 "name": "",
-        //                 "type": "uint256"
-        //                 }
-        //             ],
-        //             "name": "statements",
-        //             "outputs": [
-        //                 {
-        //                 "internalType": "string",
-        //                 "name": "",
-        //                 "type": "string"
-        //                 }
-        //             ],
-        //             "stateMutability": "view",
-        //             "type": "function",
-        //             "constant": true
-        //             },
-        //             {
-        //             "inputs": [
-        //                 {
-        //                 "internalType": "string",
-        //                 "name": "_statement",
-        //                 "type": "string"
-        //                 }
-        //             ],
-        //             "name": "appendStatement",
-        //             "outputs": [],
-        //             "stateMutability": "nonpayable",
-        //             "type": "function"
-        //             },
-        //             {
-        //             "inputs": [],
-        //             "name": "getStatements",
-        //             "outputs": [
-        //                 {
-        //                 "internalType": "string[]",
-        //                 "name": "",
-        //                 "type": "string[]"
-        //                 }
-        //             ],
-        //             "stateMutability": "view",
-        //             "type": "function",
-        //             "constant": true
-        //             }
-        //         ], '0x8B2910737171f599712CAf99fEB9a39EECeE0b50');
-        // }
-
-        // async function printCoolNumber() {
-        //     updateStatus('fetching Cool Number...');
-        //     const coolStatement = await window.contract.methods.getStatements().call();
-        //     console.log(coolStatement)
-        //     updateStatus(`coolNumber: ${coolStatement}`);
-        // }
-
-        // async function getCurrentAccount() {
-        //     const accounts = await window.web3.eth.getAccounts();
-        //     return accounts[0];r
-        // }
-
-        // async function changeCoolNumber() {
-        //     const value = "World"
-        //     updateStatus(`Updating coolNumber with ${value}`);
-        //     const account = await getCurrentAccount();
-        //     const coolNumber = await window.contract.methods.appendStatement(value).send({ from: account });
-        //     updateStatus('Updated.');
-        // }
-
-        // async function load() {
-        //     await loadWeb3();
-        //     window.contract = await loadContract();
-        //     updateStatus('Ready!');
-        // }
-
-        // function updateStatus(status) {
-        //     const statusEl = document.getElementById('status');
-        //     statusEl.innerHTML = status;
-        //     console.log(status);
-        // }
-
-        // load();
+      // load();
     </script>
-</body>
-
+  </body>
 </html>
