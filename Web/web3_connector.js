@@ -1,8 +1,13 @@
 const connectButton = document.getElementById("connectButton");
 const newSubscrypto = document.getElementById("newSubscrypto");
+const subsContainer = document.getElementById("subsContainer");
 const walletID = document.getElementById("walletID");
 const installAlert = document.getElementById("installAlert");
 const mobileDeviceWarning = document.getElementById("mobileDeviceWarning");
+//const subCard = document.getElementById("subCard");
+
+const MONTH_LEN = 18144000;
+const WEEK_LEN = 604800;
 
 const startLoading = () => {
   connectButton.classList.add("loadingButton");
@@ -32,6 +37,43 @@ const isMobile = () => {
 
   return check;
 };
+
+async function addNewSubCard (receiverAcct, payment_amount, recurrance, init_val) {
+  var newSubCard = subCard.cloneNode(true);
+  newSubCard.id = "";
+  let currentDate = new Date();
+  let nextDate = new Date();
+  let recurStr = "";
+  let recurVal = recurrance;
+
+  nextDate.setSeconds(currentDate.getSeconds() + recurrance);
+  if (recurVal >= MONTH_LEN){
+    recurStr += ~~(recurVal/MONTH_LEN) + " month";
+    if (recurVal >= MONTH_LEN*2) {
+      recurStr += "s";
+    }
+    recurVal = recurVal%MONTH_LEN;
+    recurStr += " ";
+  } 
+  if (recurVal >= WEEK_LEN) {
+    recurStr += ~~(recurVal/WEEK_LEN) + " week"
+    if (recurVal >= WEEK_LEN*3) {
+     recurStr += "s";
+    }
+    recurVal = recurVal%WEEK_LEN;
+    recurStr += " ";
+  }
+  recurStr += recurVal + " seconds";
+
+  newSubCard.getElementsByClassName("subTo")[0].innerHTML = receiverAcct;
+  newSubCard.getElementsByClassName("paymentAmt")[0].innerHTML = "" + payment_amount + " ETH";
+  newSubCard.getElementsByClassName("start")[0].innerHTML = "<b>" + currentDate.getDate() + "/" + currentDate.getMonth()+1 + "/" + currentDate.getFullYear() + "</b>";
+  newSubCard.getElementsByClassName("nextPayment")[0].innerHTML = "<b>" + nextDate.getDate() + "/" + nextDate.getMonth()+1 + "/" + nextDate.getFullYear() + "</b>";
+  newSubCard.getElementsByClassName("recur")[0].innerHTML = recurStr;
+  newSubCard.getElementsByClassName("balance")[0].innerHTML = "" + init_val + " ETH";
+  
+  subsContainer.appendChild(newSubCard);  
+}
 
 async function createNewSubscrypto(
   receiverAcct,
@@ -64,7 +106,7 @@ connectButton.addEventListener("click", () => {
       .catch((error) => {
         console.log(error, error.code);
 
-        alert(error.code);
+        //alert(error.code);
         stopLoading();
       });
   } else {
@@ -91,8 +133,8 @@ newSubscrypto.addEventListener("click", () => {
         const secs = parseInt(document.getElementById("secs").value);
         const weeks = parseInt(document.getElementById("weeks").value);
         const months = parseInt(document.getElementById("months").value);
-        const recurrance = secs + weeks * 604800 + months * 18144000;
-        console.log(recurrance);
+        const recurrance = secs + weeks * WEEK_LEN + months * MONTH_LEN;
+        //console.log(recurrance);
 
         createNewSubscrypto(
           receiverAcct,
@@ -101,11 +143,17 @@ newSubscrypto.addEventListener("click", () => {
           account,
           init_val
         );
+
+        // addNewSubCard(
+        //   receiverAcct,
+        //   payment_amount,
+        //   recurrance,
+        //   init_val
+        // );
       })
       .catch((error) => {
         console.log(error, error.code);
-
-        alert(error.code);
+        //alert(error.code);
       });
   } else {
     if (isMobile()) {
@@ -117,11 +165,6 @@ newSubscrypto.addEventListener("click", () => {
   }
 });
 
-// reloadButton.addEventListener("click", () => {
-//   window.location.reload();
-// });
-
-// // Reload the page on reload button click
 // reloadButton.addEventListener("click", () => {
 //   window.location.reload();
 // });
@@ -140,13 +183,13 @@ async function loadContract() {
   addr = data["networks"]["3"]["address"];
   return new window.web3.eth.Contract(abi, addr);
 }
-window.onload = function () {
-  load();
-};
+
 async function load() {
   await loadWeb3();
   window.contract = await loadContract();
 }
+
+
 
 // async function printCoolNumber() {
 //     updateStatus('fetching Cool Number...');
