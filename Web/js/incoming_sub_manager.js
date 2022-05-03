@@ -212,6 +212,4 @@ async function addNewSubCard(
     `;
 }
 
-addNewSubCard("archie", "4.20", "01/01/1010", "1 week", "01/10/2020", "200");
-
 load();
