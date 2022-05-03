@@ -23,11 +23,11 @@ newSubscrypto.addEventListener("click", () => {
         const account = accounts[0];
         const receiverAcct = document.getElementById("receiverWallet").value;
         const payment_amount = BigInt(
-          parseFloat(document.getElementById("payment_amount").value) *
-            ETH_TO_WEI
+          Math.round(parseFloat(document.getElementById("payment_amount").value) *
+            ETH_TO_WEI)
         ).toString();
         const init_val = BigInt(
-          parseFloat(document.getElementById("init_val").value) * ETH_TO_WEI
+          Math.round(parseFloat(document.getElementById("init_val").value) * ETH_TO_WEI)
         ).toString();
         const secs = parseInt(document.getElementById("secs").value);
         const weeks = parseInt(document.getElementById("weeks").value);

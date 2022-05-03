@@ -67,11 +67,11 @@ async function loadEvents(account) {
     .then(async function (events) {
       //console.log(events); // same results as the optional callback above
       for (const [key, value] of Object.entries(events)) {
+        const returnDict = value.returnValues;
         const active = await isActive(account, returnDict["receiver"]);
         if (!active) {
           continue;
         }
-        const returnDict = value.returnValues;
         const fromStr = returnDict["sender"];
         const recurrance = parseInt(returnDict["time_between_payments"]);
         const timeActivated = parseInt(returnDict["time_activated"]);
