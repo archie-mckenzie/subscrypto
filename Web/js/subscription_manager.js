@@ -66,7 +66,6 @@ async function loadEvents(account) {
     .then(function (events) {
       //console.log(events); // same results as the optional callback above
       for (const [key, value] of Object.entries(events)) {
-        console.log(value.returnValues);
         const returnDict = value.returnValues;
         const recStr = "To: " + returnDict["receiver"].substr(0,8)+"..."+returnDict["receiver"].substr(returnDict["receiver"].length-4);
   
@@ -87,9 +86,7 @@ async function loadEvents(account) {
         let currentSecs = new Date().getTime()/1000;
         let nextPaymentNum = ~~((currentSecs - timeActivated)/recurrance) + 1;
         let nextPaymentInSecs = timeActivated + nextPaymentNum*recurrance;
-        console.log(recurrance);
         let nextDate = new Date(nextPaymentInSecs*1000);
-        //console.log("nPIS" + nextPaymentInSecs);
         let month1 = nextDate.getMonth()+1;
         const nextPayment = month1 + "/" + nextDate.getDate() + "/" + nextDate.getFullYear();
 
