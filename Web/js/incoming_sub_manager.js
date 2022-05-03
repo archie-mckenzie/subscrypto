@@ -68,7 +68,7 @@ async function loadEvents(account) {
       //console.log(events); // same results as the optional callback above
       for (const [key, value] of Object.entries(events)) {
         const returnDict = value.returnValues;
-        const active = await isActive(account, returnDict["receiver"]);
+        const active = await isActive(returnDict["sender"], account);
         if (!active) {
           continue;
         }

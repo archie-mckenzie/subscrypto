@@ -72,10 +72,6 @@ async function load() {
   }
 }
 
-window.onload = function () {
-  load();
-};
-
 async function isActive(sender, receiver) {
   return await window.contract.methods.isActive(sender, receiver).call();
 }
