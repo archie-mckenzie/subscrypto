@@ -1,6 +1,7 @@
 const newSubscrypto = document.getElementById("newSubscrypto");
 const MONTH_LEN = 18144000;
 const WEEK_LEN = 604800;
+const ETH_TO_WEI = 1e18;
 
 async function createNewSubscrypto(
   receiverAcct,
@@ -19,13 +20,15 @@ newSubscrypto.addEventListener("click", () => {
     ethereum
       .request({ method: "eth_requestAccounts" })
       .then((accounts) => {
-        load();
         const account = accounts[0];
         const receiverAcct = document.getElementById("receiverWallet").value;
-        const payment_amount = parseFloat(
-          document.getElementById("payment_amount").value
-        );
-        const init_val = parseFloat(document.getElementById("init_val").value);
+        const payment_amount = BigInt(
+          parseFloat(document.getElementById("payment_amount").value) *
+            ETH_TO_WEI
+        ).toString();
+        const init_val = BigInt(
+          parseFloat(document.getElementById("init_val").value) * ETH_TO_WEI
+        ).toString();
         const secs = parseInt(document.getElementById("secs").value);
         const weeks = parseInt(document.getElementById("weeks").value);
         const months = parseInt(document.getElementById("months").value);
@@ -73,3 +76,4 @@ async function load() {
   await loadWeb3();
   window.contract = await loadContract();
 }
+load();

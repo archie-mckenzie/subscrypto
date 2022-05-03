@@ -23,11 +23,12 @@ async function loadContract() {
   return new window.web3.eth.Contract(abi, addr);
 }
 
-async function loadEvents() {
+async function loadEvents(account) {
   await loadWeb3();
   window.contract = await loadContract();
   window.contract
     .getPastEvents("SubscriptionData", {
+      filter: { sender: account },
       // Using an array means OR: e.g. 20 or 23
       fromBlock: 0,
       toBlock: "latest",
@@ -50,7 +51,7 @@ async function addNewSubCard(
     ethereum
       .request({ method: "eth_requestAccounts" })
       .then((accounts) => {
-        loadEvents();
+        loadEvents(accounts[0]);
       })
       .catch((error) => {
         console.log(error, error.code);
