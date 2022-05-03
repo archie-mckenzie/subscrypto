@@ -7,8 +7,8 @@ contract Subscrypto {
     // Emitted on creation of a new subscription
     // Or on request of one of the two parties involved (sender or receiver)
     event SubscriptionData (
-        address sender,
-        address receiver,
+        address indexed sender,
+        address indexed receiver,
         uint256 balance,
         uint256 payment_amount,
         uint time_activated,
@@ -18,8 +18,8 @@ contract Subscrypto {
     // Announcement of a cancelled subscription
     // Emitted when cancelSubscription() is called
     event SubscriptionCancelled (
-        address sender,
-        address receiver,
+        address indexed sender,
+        address indexed receiver,
         uint256 amount_withdrawn
     );
 
