@@ -66,12 +66,14 @@ async function loadEvents(account) {
     })
     .then(async function (events) {
       //console.log(events); // same results as the optional callback above
-      for (const [key, value] of Object.entries(events)) {
+      var subs = new Set();
+      for (const [key, value] of Object.entries(events).reverse()) {
         const returnDict = value.returnValues;
         const active = await isActive(returnDict["sender"], account);
-        if (!active) {
+        if (!active || subs.has(returnDict["sender"])) {
           continue;
         }
+        subs.add(returnDict["sender"]);
         const fromStr = returnDict["sender"];
         const recurrance = parseInt(returnDict["time_between_payments"]);
         const timeActivated = parseInt(returnDict["time_activated"]);
