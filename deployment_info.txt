@@ -1,25 +1,28 @@
-1_initial_migration.js
-======================
-
    Deploying 'Subscrypto'
    ----------------------
-   > transaction hash:    0x4cdb1bcfded6f83025acc03c8b61af301df18bcf629b2f3c095b4f83fd78b47f
-   > Blocks: 8            Seconds: 352
-   > contract address:    0x6CF81536c975EAa5fF25B41d9295659C0ee1943C
-   > block number:        12234001
-   > block timestamp:     1651562983
-   > account:             0xaAB7D64ccB3cBac70291B09d2FFb94ab6677dc9e
-   > balance:             2.262514514522723756
-   > gas used:            3155478 (0x302616)
-   > gas price:           37.592135225 gwei
+   > transaction hash:    0xfd27fe1aaecffb528b37b65475d7d72f525300d5ac403cb96d5ce143006ea7af
+   > Blocks: 5            Seconds: 188
+   > contract address:    0x5148050fDbFaeD30cAB960cdab199B67fbfc7D80
+   > block number:        12234299
+   > block timestamp:     1651578083
+   > account:             0xDC431c6314126Ba33a1B0bC15Fd12dE319B84A82
+   > balance:             1.065816847726088921
+   > gas used:            3157682 (0x302eb2)
+   > gas price:           47.893727966 gwei
    > value sent:          0 ETH
-   > total cost:          0.11862115567551255 ETH
+   > total cost:          0.151233162711134812 ETH
 
+   Pausing for 2 confirmations...
+
+   -------------------------------
+   > confirmation number: 1 (block: 12234300)
+   > confirmation number: 2 (block: 12234301)
+   > Saving migration to chain.
    > Saving artifacts
    -------------------------------------
-   > Total cost:     0.11862115567551255 ETH
+   > Total cost:     0.151233162711134812 ETH
 
 Summary
 =======
 > Total deployments:   1
-> Final cost:          0.11862115567551255 ETH
+> Final cost:          0.151233162711134812 ETH
