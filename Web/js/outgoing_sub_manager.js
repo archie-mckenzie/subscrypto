@@ -11,12 +11,26 @@ async function cancelSubscription(sender, receiver) {
 }
 
 async function addBalance(sender, receiver) {
-  await window.contract.methods.addBalance(receiver).send({ from: sender });
+  const val = BigInt(
+    Math.round(
+      parseFloat(document.getElementById("addAmount").value) * ETH_TO_WEI
+    )
+  ).toString();
+  console.log(val);
+  await window.contract.methods
+    .addBalance(receiver)
+    .send({ from: sender, value: val });
 }
 
-async function withdraw(sender, receiver, amount) {
+async function withdraw(sender, receiver) {
+  const val = BigInt(
+    Math.round(
+      parseFloat(document.getElementById("withdrawAmount").value) * ETH_TO_WEI
+    )
+  ).toString();
+  console.log(val);
   await window.contract.methods
-    .withdrawAmount(receiver, amount)
+    .withdrawAmount(receiver, val)
     .send({ from: sender });
 }
 
@@ -36,7 +50,6 @@ async function cancelButtonClick(receiver) {
 }
 
 async function addButtonClick(receiver) {
-  console.log(receiver);
   if (typeof window.ethereum !== "undefined") {
     ethereum
       .request({ method: "eth_requestAccounts" })
@@ -50,14 +63,13 @@ async function addButtonClick(receiver) {
   }
 }
 
-async function withdrawButtonClick(receiver, amount) {
-  console.log(receiver);
+async function withdrawButtonClick(receiver) {
   if (typeof window.ethereum !== "undefined") {
     ethereum
       .request({ method: "eth_requestAccounts" })
       .then((accounts) => {
         const sender = accounts[0];
-        withdraw(sender, receiver, amount);
+        withdraw(sender, receiver);
       })
       .catch((error) => {
         console.log(error, error.code);
@@ -265,14 +277,13 @@ async function addNewSubCard(
                             <div class="space-y-2">
                             <div class="flex flex-none basis-3/4">
                               <div class="flex justify-center items-center m-auto basis-2/5">
-                                <button id="addButton" class="bg-green-500  hover:bg-green-700 px-3 py-1 text-sm font-semibold text-white rounded-full">
+                                <button id="addButton" class="bg-green-500 hover:bg-green-700 px-3 py-1 text-sm font-semibold text-white rounded-full " onclick="addButtonClick('${receiverAcct}')">
                                     Add
                               </div>
                               <div class="flex items-center basis-2/5">
                                 <input
-                                  id="add"
+                                  id="addAmount"
                                   class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                  id="grid-city"
                                   type="text"
                                   placeholder="0 ETH"
                                 />
@@ -280,14 +291,13 @@ async function addNewSubCard(
                             </div>
                             <div class="flex flex-none basis-3/4">
                               <div class="flex justify-center items-center m-auto basis-2/5">
-                                <button id="withdrawButton" class="bg-orange-500 hover:bg-orange-700 px-3 py-1 text-sm font-semibold text-white rounded-full">
+                                <button id="withdrawButton" class="bg-orange-500 hover:bg-orange-700 px-3 py-1 text-sm font-semibold text-white rounded-full" onclick="withdrawButtonClick('${receiverAcct}')">
                                   Withdraw
                               </div>
                               <div class="flex items-center basis-2/5">
                                 <input
-                                  id="withdraw"
+                                  id="withdrawAmount"
                                   class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                  id="grid-city"
                                   type="text"
                                   placeholder="0 ETH"
                                 />
@@ -299,14 +309,6 @@ async function addNewSubCard(
                         </div>
                       </div>
     `;
-}
-{
-  /* <div class="space-x-4">
-                                <button class="bg-green-500 hover:bg-green-700 basis-1/2 px-3 py-1 text-sm font-semibold text-white rounded-full">
-                                  Add
-                                <button class="bg-orange-500 hover:bg-orange-700 basis-1/2 px-3 py-1 text-sm font-semibold text-white rounded-full">
-                                  Withdraw
-                              </div> */
 }
 
 // all inputs strings which we add to the html using ${}
