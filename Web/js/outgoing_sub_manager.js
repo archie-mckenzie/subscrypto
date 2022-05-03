@@ -68,7 +68,6 @@ async function loadEvents(account) {
       for (const [key, value] of Object.entries(events)) {
         const returnDict = value.returnValues;
         const recStr =
-          "To: " +
           returnDict["receiver"].substr(0, 8) +
           "..." +
           returnDict["receiver"].substr(returnDict["receiver"].length - 4);
@@ -143,7 +142,7 @@ async function addNewSubCard(
   ).innerHTML += `<div id="subCard" class="rounded-xl overflow-hidden shadow-lg bg-gray-300">
                         <div class="px-6 py-4">
                           <div class="flex flex-row">
-                            <div id="subTo" class="font-bold text-xl mb-2 basis-3/4">${receiverAcct}</div>
+                            <div id="subTo" class="font-bold text-xl mb-2 basis-3/4">To: ${receiverAcct}</div>
                             <button id="cancelButton" class="bg-red-500 hover:bg-red-700 basis-1/4  px-3 py-1 text-sm font-semibold text-white rounded-full">
                               Cancel
                           </div>
@@ -202,59 +201,6 @@ async function addNewSubCard(
                         </div>
                       </div>
     `;
-  //   var newSubCard = subCard.cloneNode(true);
-  //   newSubCard.id = "";
-  //   let currentDate = new Date();
-  //   let nextDate = new Date();
-  //   let recurStr = "";
-  //   let recurVal = recurrance;
-
-  //   nextDate.setSeconds(currentDate.getSeconds() + recurrance);
-  //   if (recurVal >= MONTH_LEN) {
-  //     recurStr += ~~(recurVal / MONTH_LEN) + " month";
-  //     if (recurVal >= MONTH_LEN * 2) {
-  //       recurStr += "s";
-  //     }
-  //     recurVal = recurVal % MONTH_LEN;
-  //     recurStr += " ";
-  //   }
-  //   if (recurVal >= WEEK_LEN) {
-  //     recurStr += ~~(recurVal / WEEK_LEN) + " week";
-  //     if (recurVal >= WEEK_LEN * 3) {
-  //       recurStr += "s";
-  //     }
-  //     recurVal = recurVal % WEEK_LEN;
-  //     recurStr += " ";
-  //   }
-  //   recurStr += recurVal + " seconds";
-
-  //   newSubCard.getElementsByClassName("subTo")[0].innerHTML = receiverAcct;
-  //   newSubCard.getElementsByClassName("paymentAmt")[0].innerHTML =
-  //     "" + payment_amount + " ETH";
-  //   newSubCard.getElementsByClassName("start")[0].innerHTML =
-  //     "<b>" +
-  //     // currentDate.getDate() +
-  //     "/" +
-  //     // currentDate.getMonth() +
-  //     1 +
-  //     "/" +
-  //     // currentDate.getFullYear() +
-  //     "</b>";
-  //   newSubCard.getElementsByClassName("nextPayment")[0].innerHTML =
-  //     "<b>" +
-  //     // nextDate.getDate() +
-  //     "/" +
-  //     // nextDate.getMonth() +
-  //     1 +
-  //     "/" +
-  //     // nextDate.getFullYear() +
-  //     "</b>";
-  //   //   newSubCard.getElementsByClassName("recur")[0].innerHTML = recurStr;
-  //   newSubCard.getElementsByClassName("recur")[0].innerHTML = "recurStr";
-  //   newSubCard.getElementsByClassName("balance")[0].innerHTML =
-  //     "" + init_val + " ETH";
-
-  //   subsContainer.appendChild(newSubCard);
 }
 
 // all inputs strings which we add to the html using ${}
@@ -266,17 +212,6 @@ async function addNewSubCardOutgoing(
   dateActivated,
   escrow
 ) {
-  // if (typeof window.ethereum !== "undefined") {
-  //   ethereum
-  //     .request({ method: "eth_requestAccounts" })
-  //     .then((accounts) => {
-  //       loadEvents(accounts[0]);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error, error.code);
-  //       //alert(error.code);
-  //     });
-  // }
   document.getElementById(
     "subsContainer"
   ).innerHTML += `<div id="subCard" class="rounded-xl overflow-hidden shadow-lg bg-gray-300">
@@ -337,59 +272,6 @@ async function addNewSubCardOutgoing(
                         </div>
                       </div>
     `;
-  //   var newSubCard = subCard.cloneNode(true);
-  //   newSubCard.id = "";
-  //   let currentDate = new Date();
-  //   let nextDate = new Date();
-  //   let recurStr = "";
-  //   let recurVal = recurrance;
-
-  //   nextDate.setSeconds(currentDate.getSeconds() + recurrance);
-  //   if (recurVal >= MONTH_LEN) {
-  //     recurStr += ~~(recurVal / MONTH_LEN) + " month";
-  //     if (recurVal >= MONTH_LEN * 2) {
-  //       recurStr += "s";
-  //     }
-  //     recurVal = recurVal % MONTH_LEN;
-  //     recurStr += " ";
-  //   }
-  //   if (recurVal >= WEEK_LEN) {
-  //     recurStr += ~~(recurVal / WEEK_LEN) + " week";
-  //     if (recurVal >= WEEK_LEN * 3) {
-  //       recurStr += "s";
-  //     }
-  //     recurVal = recurVal % WEEK_LEN;
-  //     recurStr += " ";
-  //   }
-  //   recurStr += recurVal + " seconds";
-
-  //   newSubCard.getElementsByClassName("subTo")[0].innerHTML = receiverAcct;
-  //   newSubCard.getElementsByClassName("paymentAmt")[0].innerHTML =
-  //     "" + payment_amount + " ETH";
-  //   newSubCard.getElementsByClassName("start")[0].innerHTML =
-  //     "<b>" +
-  //     // currentDate.getDate() +
-  //     "/" +
-  //     // currentDate.getMonth() +
-  //     1 +
-  //     "/" +
-  //     // currentDate.getFullYear() +
-  //     "</b>";
-  //   newSubCard.getElementsByClassName("nextPayment")[0].innerHTML =
-  //     "<b>" +
-  //     // nextDate.getDate() +
-  //     "/" +
-  //     // nextDate.getMonth() +
-  //     1 +
-  //     "/" +
-  //     // nextDate.getFullYear() +
-  //     "</b>";
-  //   //   newSubCard.getElementsByClassName("recur")[0].innerHTML = recurStr;
-  //   newSubCard.getElementsByClassName("recur")[0].innerHTML = "recurStr";
-  //   newSubCard.getElementsByClassName("balance")[0].innerHTML =
-  //     "" + init_val + " ETH";
-
-  //   subsContainer.appendChild(newSubCard);
 }
 
 load();
