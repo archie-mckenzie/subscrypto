@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Subscrypto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script src="node_modules/web3/dist/web3.min.js"></script>
+    <!-- <link href="/dist/output.css" rel="stylesheet"> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.js"
+      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(function () {
+        $("#header").load("header.html");
+      });
+    </script>
+  </head>
+
+  <body>
+    <div class="bg-gradient-to-r from-cyan-400 to-red-400 min-h-screen">
+      <div id="header"></div>
+
+      <!-- Subscription list -->
+      <div class="flex justify-center items-center">
+        <div class="lg:w-4/5 w-full lg:pr-3">
+          <div class="bg-gray-200 rounded-xl p-6 shadow-md">
+            <div class="flex space-x-4">
+              <h2 class="text-2xl font-bold mb-2">Incoming Subscriptions</h2>
+              <button
+                id="refreshButton"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+              >
+                Refresh
+              </button>
+            </div>
+
+            <br />
+            <div class="flex justify-center items-center">
+              <div class="lg:w-7/8 w-full lg:pr-3">
+                <div
+                  id="subsContainer"
+                  class="px-10 py-3 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-10"
+                >
+                  <!--Card container-->
+                </div>
+              </div>
+              <!-- <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2">Mountain</div>
+                    <p class="text-gray-700 text-base">
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, Nonea! Maiores et perferendis eaque, exercitationem praesentium nihil.
+                    </p>
+                  </div> -->
+              <!-- In line blocks of items -->
+              <!-- <div class="px-6 pt-4 pb-2">
+                    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
+                    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
+                    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
+                  </div> -->
+              <!-- <div class="bg-gradient-to-b from-gray-300 to-gray-400 rounded-xl p-6 shadow-md">
+                          <h2 class="text-2xl font-bold mb-2">archiemckenzie.eth</h2>
+                          <br>
+                          
+                      </div> -->
+            </div>
+          </div>
+          <br />
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="js/incoming_sub_manager.js"></script>
+    <!-- Web 3 Demo -->
+    <!-- <br > -->
+    <!-- <button onclick="printCoolNumber();">Print Cool Number</button>
+    <button onclick="changeCoolNumber();">Change Cool Number</button> -->
+    <!-- <br /><br /> -->
+    <!-- Status: <span id="status">Loading...</span> -->
+
+    <script type="text/javascript">
+      // async function loadWeb3() {
+
+      //     if (window.ethereum) {
+      //         window.web3 = new Web3(window.ethereum);
+      //         window.ethereum.enable();
+      //     }
+      //     console.log(window.ethereum)
+      // }
+
+      // async function loadContract() {
+      //     return await new window.web3.eth.Contract(
+      //         [
+      //             {
+      //             "inputs": [
+      //                 {
+      //                 "internalType": "uint256",
+      //                 "name": "",
+      //                 "type": "uint256"
+      //                 }
+      //             ],
+      //             "name": "statements",
+      //             "outputs": [
+      //                 {
+      //                 "internalType": "string",
+      //                 "name": "",
+      //                 "type": "string"
+      //                 }
+      //             ],
+      //             "stateMutability": "view",
+      //             "type": "function",
+      //             "constant": true
+      //             },
+      //             {
+      //             "inputs": [
+      //                 {
+      //                 "internalType": "string",
+      //                 "name": "_statement",
+      //                 "type": "string"
+      //                 }
+      //             ],
+      //             "name": "appendStatement",
+      //             "outputs": [],
+      //             "stateMutability": "nonpayable",
+      //             "type": "function"
+      //             },
+      //             {
+      //             "inputs": [],
+      //             "name": "getStatements",
+      //             "outputs": [
+      //                 {
+      //                 "internalType": "string[]",
+      //                 "name": "",
+      //                 "type": "string[]"
+      //                 }
+      //             ],
+      //             "stateMutability": "view",
+      //             "type": "function",
+      //             "constant": true
+      //             }
+      //         ], '0x8B2910737171f599712CAf99fEB9a39EECeE0b50');
+      // }
+
+      // async function printCoolNumber() {
+      //     updateStatus('fetching Cool Number...');
+      //     const coolStatement = await window.contract.methods.getStatements().call();
+      //     console.log(coolStatement)
+      //     updateStatus(`coolNumber: ${coolStatement}`);
+      // }
+
+      // async function getCurrentAccount() {
+      //     const accounts = await window.web3.eth.getAccounts();
+      //     return accounts[0];r
+      // }
+
+      // async function changeCoolNumber() {
+      //     const value = "World"
+      //     updateStatus(`Updating coolNumber with ${value}`);
+      //     const account = await getCurrentAccount();
+      //     const coolNumber = await window.contract.methods.appendStatement(value).send({ from: account });
+      //     updateStatus('Updated.');
+      // }
+
+      // async function load() {
+      //     await loadWeb3();
+      //     window.contract = await loadContract();
+      //     updateStatus('Ready!');
+      // }
+
+      // function updateStatus(status) {
+      //     const statusEl = document.getElementById('status');
+      //     statusEl.innerHTML = status;
+      //     console.log(status);
+      // }
+
+      // load();
+    </script>
+  </body>
+</html>
