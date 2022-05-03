@@ -1,5 +1,5 @@
 const newSubscrypto = document.getElementById("newSubscrypto");
-const MONTH_LEN = 18144000;
+const MONTH_LEN = 2592000;
 const WEEK_LEN = 604800;
 const ETH_TO_WEI = 1e18;
 

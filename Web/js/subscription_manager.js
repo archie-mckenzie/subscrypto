@@ -1,11 +1,23 @@
-const MONTH_LEN = 18144000;
+const MONTH_LEN = 2592000;
 const WEEK_LEN = 604800;
+const ETH_TO_WEI = 1e18;
 //const subCard = document.getElementById("subCard");
 // const subsContainer = document.getElementById("subsContainer");
 
 refreshButton.addEventListener("click", () => {
-  console.log("h");
-  addNewSubCard("archie", "4.20", "01/01/1010", "1 week", "01/10/2020", "200");
+  //console.log("h");
+  //addNewSubCard("archie", "4.20", "01/01/1010", "1 week", "01/10/2020", "200");
+  if (typeof window.ethereum !== "undefined") {
+    ethereum
+      .request({ method: "eth_requestAccounts" })
+      .then((accounts) => {
+        loadEvents(accounts[0]);
+      })
+      .catch((error) => {
+        console.log(error, error.code);
+        //alert(error.code);
+      });
+  }
 });
 
 async function loadWeb3() {
@@ -22,10 +34,28 @@ async function loadContract() {
   addr = data["networks"]["3"]["address"];
   return new window.web3.eth.Contract(abi, addr);
 }
-
-async function loadEvents(account) {
+async function load() {
   await loadWeb3();
   window.contract = await loadContract();
+  if (typeof window.ethereum !== "undefined") {
+    ethereum
+      .request({ method: "eth_requestAccounts" })
+      .then((accounts) => {
+        loadEvents(accounts[0]);
+      })
+      .catch((error) => {
+        console.log(error, error.code);
+        //alert(error.code);
+      });
+  }
+}
+
+window.onload = function () {
+  load();
+}
+
+async function loadEvents(account) {
+  document.getElementById("subsContainer").innerHTML = "";
   window.contract
     .getPastEvents("SubscriptionData", {
       filter: { sender: account },
@@ -34,15 +64,56 @@ async function loadEvents(account) {
       toBlock: "latest",
     })
     .then(function (events) {
-      //console.log(events); // same results as the optional callback above\
+      //console.log(events); // same results as the optional callback above
       for (const [key, value] of Object.entries(events)) {
-       // console.log(key);
-       // console.log(value.returnValues);
+        console.log(value.returnValues);
         const returnDict = value.returnValues;
-        const recStr = "To: " + returnDict["receiver"];
-      
-       // console.log(returnDict); 
-        //addNewSubCard(receiver, paymentAmount, nextPayment, rec);
+        const recStr = "To: " + returnDict["receiver"].substr(0,8)+"..."+returnDict["receiver"].substr(returnDict["receiver"].length-4);
+  
+        const recurrance = parseInt(returnDict["time_between_payments"]);
+        const timeActivated = parseInt(returnDict["time_activated"]);
+        const balanceInt = Number(BigInt(returnDict["balance"])) / ETH_TO_WEI;
+        const paymentAmountInt = Number(BigInt(returnDict["payment_amount"])) / ETH_TO_WEI;
+
+        const balance = "" + balanceInt;
+        const paymentAmount = "" + paymentAmountInt;
+
+        // get string of subscription activation datee
+        let startDate = new Date(timeActivated*1000);
+        let month = startDate.getMonth()+1
+        const dateActivated = month+ "/" + startDate.getDate() + "/" + startDate.getFullYear();
+
+        // find next payment date
+        let currentSecs = new Date().getTime()/1000;
+        let nextPaymentNum = ~~((currentSecs - timeActivated)/recurrance) + 1;
+        let nextPaymentInSecs = timeActivated + nextPaymentNum*recurrance;
+        console.log(recurrance);
+        let nextDate = new Date(nextPaymentInSecs*1000);
+        //console.log("nPIS" + nextPaymentInSecs);
+        let month1 = nextDate.getMonth()+1;
+        const nextPayment = month1 + "/" + nextDate.getDate() + "/" + nextDate.getFullYear();
+
+        // build recurrance string
+        let recurStr = "";
+        let recurVal = recurrance;
+        if (recurVal >= MONTH_LEN) {
+          recurStr += ~~(recurVal / MONTH_LEN) + " month";
+          if (recurVal >= MONTH_LEN * 2) {
+            recurStr += "s";
+          }
+          recurVal = recurVal % MONTH_LEN;
+          recurStr += " ";
+        }
+        if (recurVal >= WEEK_LEN) {
+          recurStr += ~~(recurVal / WEEK_LEN) + " week";
+          if (recurVal >= WEEK_LEN * 2) {
+            recurStr += "s";
+          }
+          recurVal = recurVal % WEEK_LEN;
+          recurStr += " ";
+        }
+        recurStr += recurVal + " seconds";
+        addNewSubCard(recStr, paymentAmount, nextPayment, recurStr, dateActivated, balance);
       }
     });
 }
@@ -56,17 +127,6 @@ async function addNewSubCard(
   dateActivated,
   balance
 ) {
-  if (typeof window.ethereum !== "undefined") {
-    ethereum
-      .request({ method: "eth_requestAccounts" })
-      .then((accounts) => {
-        loadEvents(accounts[0]);
-      })
-      .catch((error) => {
-        console.log(error, error.code);
-        //alert(error.code);
-      });
-  }
   document.getElementById(
     "subsContainer"
   ).innerHTML += `<div id="subCard" class="rounded-xl overflow-hidden shadow-lg bg-gray-300">
