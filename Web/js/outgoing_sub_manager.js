@@ -5,10 +5,9 @@ const ETH_TO_WEI = 1e18;
 // const subsContainer = document.getElementById("subsContainer");
 
 async function cancelSubscription(sender, receiver) {
-  // await window.contract.methods
-  //   .cancelSubscription(receiver)
-  //   .send({ from: sender });
-  console.log(await window.contract.methods.isActive(sender, receiver).call());
+  await window.contract.methods
+    .cancelSubscription(receiver)
+    .send({ from: sender });
 }
 
 async function cancelButtonClick(receiver) {
@@ -91,7 +90,7 @@ async function loadEvents(account) {
       for (const [key, value] of Object.entries(events).reverse()) {
         const returnDict = value.returnValues;
         const active = await isActive(account, returnDict["receiver"]);
-        if (!active ||  subs.has(returnDict["receiver"])) {
+        if (!active || subs.has(returnDict["receiver"])) {
           continue;
         }
         subs.add(returnDict["receiver"]);
@@ -217,22 +216,51 @@ async function addNewSubCard(
                         </div>
                         <div class="px-10 py-3">
                           <div class="flex flex-row">
-                            <div class="basis-1/3">
+                            <div class="basis-1/4">
                               <div class="font-bold text-sm mb-2">Balance</div>
                               <div class="balance" class="font-bold text-xl mb-2">${balance} ETH</div>
                             </div>
-                            <div class="flex justify-center items-center  basis-2/3">
-                              <div class="space-x-4">
-                                <button class="bg-green-500 hover:bg-green-700 basis-1/2 px-3 py-1 text-sm font-semibold text-white rounded-full">
+                            <div class="flex flex-row  basis-3/4">
+                            <div class="items-center m-auto justify-center basis-1/4">
+                              <button class="bg-green-500  hover:bg-green-700 px-3 py-1 text-sm font-semibold text-white rounded-full">
                                   Add
-                                <button class="bg-orange-500 hover:bg-orange-700 basis-1/2 px-3 py-1 text-sm font-semibold text-white rounded-full">
+                              <button class="bg-orange-500 hover:bg-orange-700 px-3 py-1 text-sm font-semibold text-white rounded-full">
                                   Withdraw
-                              </div>
+                            </div>
+                            <div class=" items-center basis-3/4">
+                              <input
+                                id="months"
+                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                id="grid-city"
+                                type="text"
+                                placeholder="0"
+                              />
+                              <input
+                                id="months"
+                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                id="grid-city"
+                                type="text"
+                                placeholder="0"
+                              />
+                            </div>
+                            
+                            
+                            
+                            
+                              
                             </div>
                           </div>
                         </div>
                       </div>
     `;
+}
+{
+  /* <div class="space-x-4">
+                                <button class="bg-green-500 hover:bg-green-700 basis-1/2 px-3 py-1 text-sm font-semibold text-white rounded-full">
+                                  Add
+                                <button class="bg-orange-500 hover:bg-orange-700 basis-1/2 px-3 py-1 text-sm font-semibold text-white rounded-full">
+                                  Withdraw
+                              </div> */
 }
 
 // all inputs strings which we add to the html using ${}
