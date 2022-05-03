@@ -52,7 +52,7 @@ async function load() {
 
 window.onload = function () {
   load();
-}
+};
 
 async function loadEvents(account) {
   document.getElementById("subsContainer").innerHTML = "";
@@ -67,28 +67,35 @@ async function loadEvents(account) {
       //console.log(events); // same results as the optional callback above
       for (const [key, value] of Object.entries(events)) {
         const returnDict = value.returnValues;
-        const recStr = "To: " + returnDict["receiver"].substr(0,8)+"..."+returnDict["receiver"].substr(returnDict["receiver"].length-4);
-  
+        const recStr =
+          "To: " +
+          returnDict["receiver"].substr(0, 8) +
+          "..." +
+          returnDict["receiver"].substr(returnDict["receiver"].length - 4);
+
         const recurrance = parseInt(returnDict["time_between_payments"]);
         const timeActivated = parseInt(returnDict["time_activated"]);
         const balanceInt = Number(BigInt(returnDict["balance"])) / ETH_TO_WEI;
-        const paymentAmountInt = Number(BigInt(returnDict["payment_amount"])) / ETH_TO_WEI;
+        const paymentAmountInt =
+          Number(BigInt(returnDict["payment_amount"])) / ETH_TO_WEI;
 
         const balance = "" + balanceInt;
         const paymentAmount = "" + paymentAmountInt;
 
         // get string of subscription activation datee
-        let startDate = new Date(timeActivated*1000);
-        let month = startDate.getMonth()+1
-        const dateActivated = month+ "/" + startDate.getDate() + "/" + startDate.getFullYear();
+        let startDate = new Date(timeActivated * 1000);
+        let month = startDate.getMonth() + 1;
+        const dateActivated =
+          month + "/" + startDate.getDate() + "/" + startDate.getFullYear();
 
         // find next payment date
-        let currentSecs = new Date().getTime()/1000;
-        let nextPaymentNum = ~~((currentSecs - timeActivated)/recurrance) + 1;
-        let nextPaymentInSecs = timeActivated + nextPaymentNum*recurrance;
-        let nextDate = new Date(nextPaymentInSecs*1000);
-        let month1 = nextDate.getMonth()+1;
-        const nextPayment = month1 + "/" + nextDate.getDate() + "/" + nextDate.getFullYear();
+        let currentSecs = new Date().getTime() / 1000;
+        let nextPaymentNum = ~~((currentSecs - timeActivated) / recurrance) + 1;
+        let nextPaymentInSecs = timeActivated + nextPaymentNum * recurrance;
+        let nextDate = new Date(nextPaymentInSecs * 1000);
+        let month1 = nextDate.getMonth() + 1;
+        const nextPayment =
+          month1 + "/" + nextDate.getDate() + "/" + nextDate.getFullYear();
 
         // build recurrance string
         let recurStr = "";
@@ -110,7 +117,14 @@ async function loadEvents(account) {
           recurStr += " ";
         }
         recurStr += recurVal + " seconds";
-        addNewSubCard(recStr, paymentAmount, nextPayment, recurStr, dateActivated, balance);
+        addNewSubCard(
+          recStr,
+          paymentAmount,
+          nextPayment,
+          recurStr,
+          dateActivated,
+          balance
+        );
       }
     });
 }
@@ -377,3 +391,5 @@ async function addNewSubCardOutgoing(
 
   //   subsContainer.appendChild(newSubCard);
 }
+
+load();
