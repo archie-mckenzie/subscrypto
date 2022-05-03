@@ -50,9 +50,6 @@ async function load() {
   }
 }
 
-window.onload = function () {
-  load();
-};
 
 async function loadEvents(account) {
   document.getElementById("subsContainer").innerHTML = "";
@@ -140,17 +137,6 @@ async function addNewSubCard(
   dateActivated,
   balance
 ) {
-  if (typeof window.ethereum !== "undefined") {
-    ethereum
-      .request({ method: "eth_requestAccounts" })
-      .then((accounts) => {
-        loadEvents(accounts[0]);
-      })
-      .catch((error) => {
-        console.log(error, error.code);
-        //alert(error.code);
-      });
-  }
   document.getElementById(
     "subsContainer"
   ).innerHTML += `<div id="subCard" class="rounded-xl overflow-hidden shadow-lg bg-gray-300">
