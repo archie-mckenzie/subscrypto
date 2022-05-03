@@ -91,7 +91,7 @@ async function loadEvents(account) {
       for (const [key, value] of Object.entries(events).reverse()) {
         const returnDict = value.returnValues;
         const active = await isActive(account, returnDict["receiver"]);
-        if (!active ||  subs.has(returnDict["receiver"])) {
+        if (!active ||  subs.has(returnDict["receiver"])) { 
           continue;
         }
         subs.add(returnDict["receiver"]);
@@ -123,6 +123,8 @@ async function loadEvents(account) {
         let month1 = nextDate.getMonth() + 1;
         const nextPayment =
           month1 + "/" + nextDate.getDate() + "/" + nextDate.getFullYear();
+
+        //const curBalance = balance - ~~((currentSecs - returnDict["time_last_balance_update"]))/recurrance) * paymentAmountInt;
 
         // build recurrance string
         let recurStr = "";
