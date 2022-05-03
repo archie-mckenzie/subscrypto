@@ -25,3 +25,20 @@ For example, if we had a SubscriptionInfo struct which looked like this:
     }
 
 We could deduce that Aaron was making a payment over time to Phillip. Aaron agreed to pay Phillip 10 ETH per month for the next year. Aaron paid 120 ETH upfront and two months have passed already. However, Phillip has not collected the 20 ETH available to him yet. Instead, the smart contract is holding it in escrow.
+
+# Run locally
+
+Dependencies:
+For simple, zero-configuration command-line static HTTP server:
+` npm install http-server`
+
+Run:
+`git clone https://github.com/archie-mckenzie/subscrypto.git`
+`cd Web`
+`http-server`
+
+Navigate to `localhost:8080` on a browser to access the Subscrypto web app.
+
+
+
+
