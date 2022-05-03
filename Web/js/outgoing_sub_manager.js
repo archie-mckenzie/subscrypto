@@ -4,6 +4,28 @@ const ETH_TO_WEI = 1e18;
 //const subCard = document.getElementById("subCard");
 // const subsContainer = document.getElementById("subsContainer");
 
+async function cancelSubscription(sender, receiver) {
+  // await window.contract.methods
+  //   .cancelSubscription(receiver)
+  //   .send({ from: sender });
+  console.log(await window.contract.methods.isActive(sender, receiver).call());
+}
+
+async function cancelButtonClick(receiver) {
+  console.log(receiver);
+  if (typeof window.ethereum !== "undefined") {
+    ethereum
+      .request({ method: "eth_requestAccounts" })
+      .then((accounts) => {
+        const sender = accounts[0];
+        cancelSubscription(sender, receiver);
+      })
+      .catch((error) => {
+        console.log(error, error.code);
+      });
+  }
+}
+
 refreshButton.addEventListener("click", () => {
   //console.log("h");
   //addNewSubCard("archie", "4.20", "01/01/1010", "1 week", "01/10/2020", "200");
@@ -54,6 +76,10 @@ window.onload = function () {
   load();
 };
 
+async function isActive(sender, receiver) {
+  return await window.contract.methods.isActive(sender, receiver).call();
+}
+
 async function loadEvents(account) {
   document.getElementById("subsContainer").innerHTML = "";
   window.contract
@@ -63,10 +89,14 @@ async function loadEvents(account) {
       fromBlock: 0,
       toBlock: "latest",
     })
-    .then(function (events) {
+    .then(async function (events) {
       //console.log(events); // same results as the optional callback above
       for (const [key, value] of Object.entries(events)) {
         const returnDict = value.returnValues;
+        const active = await isActive(account, returnDict["receiver"]);
+        if (!active) {
+          continue;
+        }
         const recStr =
           returnDict["receiver"].substr(0, 8) +
           "..." +
@@ -117,7 +147,7 @@ async function loadEvents(account) {
         }
         recurStr += recurVal + " seconds";
         addNewSubCard(
-          recStr,
+          returnDict["receiver"],
           paymentAmount,
           nextPayment,
           recurStr,
@@ -137,13 +167,17 @@ async function addNewSubCard(
   dateActivated,
   balance
 ) {
+  const recStr =
+    receiverAcct.substr(0, 8) +
+    "..." +
+    receiverAcct.substr(receiverAcct.length - 4);
   document.getElementById(
     "subsContainer"
   ).innerHTML += `<div id="subCard" class="rounded-xl overflow-hidden shadow-lg bg-gray-300">
                         <div class="px-6 py-4">
                           <div class="flex flex-row">
-                            <div id="subTo" class="font-bold text-xl mb-2 basis-3/4">To: ${receiverAcct}</div>
-                            <button id="cancelButton" class="bg-red-500 hover:bg-red-700 basis-1/4  px-3 py-1 text-sm font-semibold text-white rounded-full">
+                            <div id="subTo" class="font-bold text-xl mb-2 basis-3/4">To: ${recStr}</div>
+                            <button id="cancelButton" class="bg-red-500 hover:bg-red-700 basis-1/4  px-3 py-1 text-sm font-semibold text-white rounded-full" onclick="cancelButtonClick('${receiverAcct}');" >
                               Cancel
                           </div>
                           
