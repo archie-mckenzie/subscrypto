@@ -95,8 +95,8 @@ async function loadEvents(account) {
         let lastPaymentInSecs = timeActivated + lastPaymentNum * recurrance;
         let lastDate = new Date(lastPaymentInSecs * 1000);
         //console.log("nPIS" + nextPaymentInSecs);
-        let month1 = nextDate.getMonth() + 1;
-        const nextPayment =
+        let month1 = lastDate.getMonth() + 1;
+        const lastPayment =
           month1 + "/" + lastDate.getDate() + "/" + lastDate.getFullYear();
 
         // build recurrance string
@@ -122,7 +122,7 @@ async function loadEvents(account) {
         addNewSubCard(
           fromStr,
           paymentAmount,
-          nextPayment,
+          lastPayment,
           recurStr,
           dateActivated,
           balance
