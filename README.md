@@ -30,11 +30,15 @@ We could deduce that Aaron was making a payment over time to Phillip. Aaron agre
 
 Dependencies:
 For simple, zero-configuration command-line static HTTP server:
+
 ` npm install http-server`
 
 Run:
+
 `git clone https://github.com/archie-mckenzie/subscrypto.git`
+
 `cd Web`
+
 `http-server`
 
 Navigate to `localhost:8080` on a browser to access the Subscrypto web app.
