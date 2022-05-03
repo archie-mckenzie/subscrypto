@@ -67,6 +67,16 @@ contract('Subscrypto', function (accounts) {
         let success = await subscrypto.isActive(me, you);
         return assert.equal(success, false);
     });
+    it('Able to make subscription after cancelling?', async function () {
+        const subscrypto = await Subscrypto.new();
+        let me = accounts[0];
+        let you = accounts[1];
+        await subscrypto.newSubscription(you, 1, 10, {value: 100});
+        await subscrypto.cancelSubscription(you);
+        await subscrypto.newSubscription(you, 1, 10, {value: 100});
+        let success = await subscrypto.isActive(me, you);
+        return assert.equal(success, true);
+    });
 
     it('Able to withdraw an amount?', async function () {
         const subscrypto = await Subscrypto.new();
