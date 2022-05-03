@@ -63,14 +63,8 @@ async function loadEvents(account) {
     .then(function (events) {
       //console.log(events); // same results as the optional callback above
       for (const [key, value] of Object.entries(events)) {
-        console.log(value.returnValues);
         const returnDict = value.returnValues;
-        const fromStr =
-          "From: " +
-          returnDict["sender"].substr(0, 8) +
-          "..." +
-          returnDict["sender"].substr(returnDict["sender"].length - 4);
-
+        const fromStr = returnDict["sender"];
         const recurrance = parseInt(returnDict["time_between_payments"]);
         const timeActivated = parseInt(returnDict["time_activated"]);
         const balanceInt = Number(BigInt(returnDict["balance"])) / ETH_TO_WEI;
@@ -128,21 +122,45 @@ async function loadEvents(account) {
     });
 }
 
+async function collectButton(senderAcct) {
+  if (typeof window.ethereum !== "undefined") {
+    ethereum
+      .request({ method: "eth_requestAccounts" })
+      .then((accounts) => {
+        collectSubscription(senderAcct, accounts[0]);
+      })
+      .catch((error) => {
+        console.log(error, error.code);
+        //alert(error.code);
+      });
+  }
+
+}
+
+async function collectSubscription(sender, receiver) {
+  await window.contract.methods
+    .receiveSubscription(sender)
+    .send({ from: receiver });
+}
+
 // all inputs strings which we add to the html using ${}
 async function addNewSubCard(
-  receiverAcct,
+  senderAcct,
   paymentAmount,
   lastPayment,
   recurrance,
   dateActivated,
   balance
 ) {
+  sendStr = senderAcct.substr(0, 8) +
+          "..." +
+         senderAcct.substr(senderAcct.length - 4);
   document.getElementById(
     "subsContainer"
   ).innerHTML += `<div id="subCard" class="rounded-xl overflow-hidden shadow-lg bg-gray-300">
                         <div class="px-6 py-4">
                           <div class="flex flex-row">
-                            <div id="subTo" class="font-bold text-xl mb-2 basis-3/4">${receiverAcct}</div>
+                            <div id="subTo" class="font-bold text-xl mb-2 basis-3/4">From: ${sendStr}</div>
                           </div>
                           
                         </div>
@@ -189,7 +207,7 @@ async function addNewSubCard(
                             </div>
                             <div class="flex justify-center items-center  basis-2/3">
                               <div class="space-x-4">
-                                <button class="bg-orange-500 hover:bg-orange-700 basis-1/2 px-3 py-1 text-sm font-semibold text-white rounded-full">
+                                <button onclick="collectButton('${senderAcct}')" class="bg-orange-500 hover:bg-orange-700 basis-1/2 px-3 py-1 text-sm font-semibold text-white rounded-full">
                                   Collect
                               </div>
                             </div>
