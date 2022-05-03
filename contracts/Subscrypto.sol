@@ -75,8 +75,6 @@ contract Subscrypto {
         updatePaymentAvailable(msg.sender, receiver);
         // Log the cancelled subscription
         emit SubscriptionCancelled(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance);
-        // Transfer money to appropriate parties
-        updatePaymentAvailable(msg.sender, receiver);
         payable(msg.sender).transfer(accounts[msg.sender].subscriptions[receiver].balance);
         payable(receiver).transfer(accounts[msg.sender].subscriptions[receiver].payment_available);
         // Reset the subscription
@@ -85,8 +83,8 @@ contract Subscrypto {
  
     // Withdraws a specified amount from subscription plan
     function withdrawAmount(address receiver, uint256 amount) public payable {
-        updatePaymentAvailable(msg.sender, receiver);
         require(accounts[msg.sender].subscriptions[receiver].balance >= amount, "Balance too low!");
+        updatePaymentAvailable(msg.sender, receiver);
         accounts[msg.sender].subscriptions[receiver].balance -= amount;
         payable(msg.sender).transfer(amount);
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
@@ -99,6 +97,7 @@ contract Subscrypto {
     // Cancels subscription if balance falls below payment_amount
     function withdrawExcess(address receiver) public payable {
         require(isActive(msg.sender, receiver), "Subscription not active!");
+        updatePaymentAvailable(msg.sender, receiver);
         uint256 remainder = accounts[msg.sender].subscriptions[receiver].balance % accounts[msg.sender].subscriptions[receiver].payment_amount;
         accounts[msg.sender].subscriptions[receiver].balance -= remainder;
         payable(msg.sender).transfer(remainder);
