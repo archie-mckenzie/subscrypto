@@ -96,7 +96,8 @@
       "name": "newSubscription",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function"
+      "type": "function",
+      "payable": true
     },
     {
       "inputs": [
@@ -109,7 +110,8 @@
       "name": "addBalance",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function"
+      "type": "function",
+      "payable": true
     },
     {
       "inputs": [
@@ -122,7 +124,8 @@
       "name": "cancelSubscription",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function"
+      "type": "function",
+      "payable": true
     },
     {
       "inputs": [
@@ -140,7 +143,8 @@
       "name": "withdrawAmount",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function"
+      "type": "function",
+      "payable": true
     },
     {
       "inputs": [
@@ -153,7 +157,8 @@
       "name": "withdrawExcess",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function"
+      "type": "function",
+      "payable": true
     },
     {
       "inputs": [
@@ -177,7 +182,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -19438,9 +19444,17 @@
     "name": "solc",
     "version": "0.8.13+commit.abaa5c0e.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "3": {
+      "events": {},
+      "links": {},
+      "address": "0x6CF81536c975EAa5fF25B41d9295659C0ee1943C",
+      "transactionHash": "0x4cdb1bcfded6f83025acc03c8b61af301df18bcf629b2f3c095b4f83fd78b47f"
+    }
+  },
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-03T07:07:56.137Z",
+  "updatedAt": "2022-05-03T07:29:54.168Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},
