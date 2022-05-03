@@ -262,35 +262,39 @@ async function addNewSubCard(
                               <div class="font-bold text-sm mb-2">Balance</div>
                               <div class="balance" class="font-bold text-xl mb-2">${balance} ETH</div>
                             </div>
-                            <div class="flex flex-row  basis-3/4">
-                            <div class="items-center m-auto justify-center basis-1/4">
-                              <button class="bg-green-500  hover:bg-green-700 px-3 py-1 text-sm font-semibold text-white rounded-full">
-                                  Add
-                              <button class="bg-orange-500 hover:bg-orange-700 px-3 py-1 text-sm font-semibold text-white rounded-full">
+                            <div class="space-y-2">
+                            <div class="flex flex-none basis-3/4">
+                              <div class="flex justify-center items-center m-auto basis-2/5">
+                                <button id="addButton" class="bg-green-500  hover:bg-green-700 px-3 py-1 text-sm font-semibold text-white rounded-full">
+                                    Add
+                              </div>
+                              <div class="flex items-center basis-2/5">
+                                <input
+                                  id="add"
+                                  class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                  id="grid-city"
+                                  type="text"
+                                  placeholder="0 ETH"
+                                />
+                              </div>
+                            </div>
+                            <div class="flex flex-none basis-3/4">
+                              <div class="flex justify-center items-center m-auto basis-2/5">
+                                <button id="withdrawButton" class="bg-orange-500 hover:bg-orange-700 px-3 py-1 text-sm font-semibold text-white rounded-full">
                                   Withdraw
+                              </div>
+                              <div class="flex items-center basis-2/5">
+                                <input
+                                  id="withdraw"
+                                  class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                  id="grid-city"
+                                  type="text"
+                                  placeholder="0 ETH"
+                                />
+                              </div>
                             </div>
-                            <div class=" items-center basis-3/4">
-                              <input
-                                id="months"
-                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                id="grid-city"
-                                type="text"
-                                placeholder="0"
-                              />
-                              <input
-                                id="months"
-                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                id="grid-city"
-                                type="text"
-                                placeholder="0"
-                              />
-                            </div>
-                            
-                            
-                            
-                            
-                              
-                            </div>
+
+                            <div>
                           </div>
                         </div>
                       </div>
