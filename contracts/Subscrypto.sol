@@ -71,6 +71,8 @@ contract Subscrypto {
     // Allows a subscriber to withdraw their excess ETH and cancel their subscription 
     function cancelSubscription(address receiver) public payable {
         require(isActive(msg.sender, receiver), "Subscription not active");
+        // Update payment amount
+        updatePaymentAvailable(msg.sender, receiver);
         // Log the cancelled subscription
         emit SubscriptionCancelled(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance);
         // Transfer money to appropriate parties
