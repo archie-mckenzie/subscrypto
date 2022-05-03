@@ -34,7 +34,16 @@ async function loadEvents(account) {
       toBlock: "latest",
     })
     .then(function (events) {
-      console.log(events); // same results as the optional callback above
+      //console.log(events); // same results as the optional callback above\
+      for (const [key, value] of Object.entries(events)) {
+       // console.log(key);
+       // console.log(value.returnValues);
+        const returnDict = value.returnValues;
+        const recStr = "To: " + returnDict["receiver"];
+      
+       // console.log(returnDict); 
+        //addNewSubCard(receiver, paymentAmount, nextPayment, rec);
+      }
     });
 }
 
