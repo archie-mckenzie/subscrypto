@@ -1,5 +1,6 @@
 const MONTH_LEN = 2592000;
 const WEEK_LEN = 604800;
+const ETH_TO_WEI = 1e18;
 //const subCard = document.getElementById("subCard");
 // const subsContainer = document.getElementById("subsContainer");
 
