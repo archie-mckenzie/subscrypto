@@ -10,6 +10,16 @@ async function cancelSubscription(sender, receiver) {
     .send({ from: sender });
 }
 
+async function addBalance(sender, receiver) {
+  await window.contract.methods.addBalance(receiver).send({ from: sender });
+}
+
+async function withdraw(sender, receiver, amount) {
+  await window.contract.methods
+    .withdrawAmount(receiver, amount)
+    .send({ from: sender });
+}
+
 async function cancelButtonClick(receiver) {
   console.log(receiver);
   if (typeof window.ethereum !== "undefined") {
@@ -18,6 +28,36 @@ async function cancelButtonClick(receiver) {
       .then((accounts) => {
         const sender = accounts[0];
         cancelSubscription(sender, receiver);
+      })
+      .catch((error) => {
+        console.log(error, error.code);
+      });
+  }
+}
+
+async function addButtonClick(receiver) {
+  console.log(receiver);
+  if (typeof window.ethereum !== "undefined") {
+    ethereum
+      .request({ method: "eth_requestAccounts" })
+      .then((accounts) => {
+        const sender = accounts[0];
+        addBalance(sender, receiver);
+      })
+      .catch((error) => {
+        console.log(error, error.code);
+      });
+  }
+}
+
+async function withdrawButtonClick(receiver, amount) {
+  console.log(receiver);
+  if (typeof window.ethereum !== "undefined") {
+    ethereum
+      .request({ method: "eth_requestAccounts" })
+      .then((accounts) => {
+        const sender = accounts[0];
+        withdraw(sender, receiver, amount);
       })
       .catch((error) => {
         console.log(error, error.code);
@@ -122,6 +162,8 @@ async function loadEvents(account) {
         let month1 = nextDate.getMonth() + 1;
         const nextPayment =
           month1 + "/" + nextDate.getDate() + "/" + nextDate.getFullYear();
+
+        //const curBalance = balance - ~~((currentSecs - returnDict["time_last_balance_update"]))/recurrance) * paymentAmountInt;
 
         // build recurrance string
         let recurStr = "";

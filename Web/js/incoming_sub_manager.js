@@ -84,6 +84,7 @@ async function loadEvents(account) {
         const balance = "" + balanceInt;
         const paymentAmount = "" + paymentAmountInt;
 
+
         // get string of subscription activation datee
         let startDate = new Date(timeActivated * 1000);
         let month = startDate.getMonth() + 1;
@@ -99,6 +100,8 @@ async function loadEvents(account) {
         let month1 = lastDate.getMonth() + 1;
         const lastPayment =
           month1 + "/" + lastDate.getDate() + "/" + lastDate.getFullYear();
+
+        const paymentAvailable = ~~((currentSecs - returnDict["time_last_paid"])/recurrance) * paymentAmountInt;
 
         // build recurrance string
         let recurStr = "";
@@ -126,7 +129,7 @@ async function loadEvents(account) {
           lastPayment,
           recurStr,
           dateActivated,
-          balance
+          paymentAvailable
         );
       }
     });
@@ -160,7 +163,7 @@ async function addNewSubCard(
   lastPayment,
   recurrance,
   dateActivated,
-  balance
+  paymentAvailable
 ) {
   sendStr = senderAcct.substr(0, 8) +
           "..." +
@@ -212,8 +215,8 @@ async function addNewSubCard(
                         <div class="px-10 py-3">
                           <div class="flex flex-row">
                             <div class="basis-1/3">
-                              <div class="font-bold text-sm mb-2">Balance</div>
-                              <div class="Available funds" class="font-bold text-xl mb-2">${balance} ETH</div>
+                              <div class="font-bold text-sm mb-2">Payment Available</div>
+                              <div class="Available funds" class="font-bold text-xl mb-2">${paymentAvailable} ETH</div>
                             </div>
                             <div class="flex justify-center items-center  basis-2/3">
                               <div class="space-x-4">
