@@ -22,6 +22,7 @@ For example, if we had a SubscriptionInfo struct which looked like this:
         last_payment_time = now - 4 days
         time_between_payments = 1 month
         time_activated = now - 2 months - 4 days 
+        time_balance_last_updated = 2 months - 4 days
     }
 
 We could deduce that Aaron was making a payment over time to Phillip. Aaron agreed to pay Phillip 10 ETH per month for the next year. Aaron paid 120 ETH upfront and two months have passed already. However, Phillip has not collected the 20 ETH available to him yet. Instead, the smart contract is holding it in escrow.
