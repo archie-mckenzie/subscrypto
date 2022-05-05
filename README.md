@@ -2,7 +2,7 @@
 
 Subscrypto is a dApp for payment over time on the Ethereum blockchain. 
 
-Note to COS 495 staff: we have continued working on this project post Dean's Date due to our grant agreement with the Ethereum Foundation. Feel free to use our last commit before Dean's Date for grading purposes. To run the code, follow the # Run locally instructions below. 
+*Note to COS 495 Staff: We have continued working on this project post Dean's Date due to our grant agreement with the Ethereum Foundation. Feel free to use our last commit before Dean's Date for grading purposes. To run the code, follow the "Run locally" instructions below.*
 
 Here's a brief overview of how the smart contract works:
 
