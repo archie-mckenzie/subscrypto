@@ -13,7 +13,8 @@ contract Subscrypto {
         uint256 payment_amount,
         uint time_activated,
         uint time_between_payments,
-        uint time_last_paid
+        uint time_last_paid,
+        uint time_balance_last_updated
     );
 
     // Announcement of a cancelled subscription
@@ -36,6 +37,7 @@ contract Subscrypto {
         uint last_payment_time; // last time a payment was made from this subscription
         uint time_between_payments; // interval between payment times
         uint time_activated; // time the subscription was created
+        uint time_balance_last_updated; // time the balance was last updated
     }
 
     // Subscrypto Account which contains all subscriptions of a certain user
@@ -53,19 +55,18 @@ contract Subscrypto {
         } 
         // If subscription does not exist, create new subscription
         require(msg.value >= payment_amount, "Not enough ETH for first payment!");
-        accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, msg.value, payment_amount, 0, 0, time_between_payments + block.timestamp, 0, time_between_payments, block.timestamp);
-        accounts[msg.sender].subscriptions[receiver].balance -= payment_amount;
-        accounts[msg.sender].subscriptions[receiver].payment_available = payment_amount;
-        accounts[msg.sender].subscriptions[receiver].last_payment_time = block.timestamp;
-        accounts[msg.sender].subscriptions[receiver].next_payment_time += accounts[msg.sender].subscriptions[receiver].time_between_payments;
+        accounts[msg.sender].subscriptions[receiver] = SubscriptionInfo(msg.sender, receiver, msg.value - payment_amount, payment_amount, 0, 0, time_between_payments + block.timestamp, 0, time_between_payments, block.timestamp, block.timestamp);
         // Log the new subscription
-        emit SubscriptionData(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance, accounts[msg.sender].subscriptions[receiver].payment_amount, accounts[msg.sender].subscriptions[receiver].time_activated, accounts[msg.sender].subscriptions[receiver].time_between_payments, block.timestamp);
+        emit SubscriptionData(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance, accounts[msg.sender].subscriptions[receiver].payment_amount, accounts[msg.sender].subscriptions[receiver].time_activated, accounts[msg.sender].subscriptions[receiver].time_between_payments, block.timestamp, block.timestamp);
     }
 
     // Add balance to an existing subscriptionInfo struct
     function addBalance(address receiver) public payable {
         require(isActive(msg.sender, receiver), "Subscription not active!");
         accounts[msg.sender].subscriptions[receiver].balance += msg.value;
+        accounts[msg.sender].subscriptions[receiver].time_balance_last_updated = block.timestamp;
+        emit SubscriptionData(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance, accounts[msg.sender].subscriptions[receiver].payment_amount, accounts[msg.sender].subscriptions[receiver].time_activated, accounts[msg.sender].subscriptions[receiver].time_between_payments, accounts[msg.sender].subscriptions[receiver].last_payment_time, block.timestamp);
+
     }
 
     // Allows a subscriber to withdraw their excess ETH and cancel their subscription 
@@ -73,24 +74,27 @@ contract Subscrypto {
         require(isActive(msg.sender, receiver), "Subscription not active");
         // Update payment amount
         updatePaymentAvailable(msg.sender, receiver);
-        // Log the cancelled subscription
-        emit SubscriptionCancelled(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance);
+        // transfer appropriate funds
         payable(msg.sender).transfer(accounts[msg.sender].subscriptions[receiver].balance);
         payable(receiver).transfer(accounts[msg.sender].subscriptions[receiver].payment_available);
+        // Log the cancelled subscription
+        emit SubscriptionCancelled(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance);
         // Reset the subscription
         delete(accounts[msg.sender].subscriptions[receiver]);
     }
  
     // Withdraws a specified amount from subscription plan
     function withdrawAmount(address receiver, uint256 amount) public payable {
-        require(accounts[msg.sender].subscriptions[receiver].balance >= amount, "Balance too low!");
+        require(isActive(msg.sender, receiver), "Subscription not active!");
         updatePaymentAvailable(msg.sender, receiver);
+        require(accounts[msg.sender].subscriptions[receiver].balance >= amount, "Balance too low!");
         accounts[msg.sender].subscriptions[receiver].balance -= amount;
         payable(msg.sender).transfer(amount);
+        accounts[msg.sender].subscriptions[receiver].time_balance_last_updated = block.timestamp;
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
             cancelSubscription(receiver);
         }
-        emit SubscriptionData(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance, accounts[msg.sender].subscriptions[receiver].payment_amount, accounts[msg.sender].subscriptions[receiver].time_activated, accounts[msg.sender].subscriptions[receiver].time_between_payments, accounts[msg.sender].subscriptions[receiver].last_payment_time);
+        emit SubscriptionData(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance, accounts[msg.sender].subscriptions[receiver].payment_amount, accounts[msg.sender].subscriptions[receiver].time_activated, accounts[msg.sender].subscriptions[receiver].time_between_payments, accounts[msg.sender].subscriptions[receiver].last_payment_time, block.timestamp);
     }
 
     // Withdraws any excess ETH being held in escrow by the contract
@@ -101,22 +105,24 @@ contract Subscrypto {
         uint256 remainder = accounts[msg.sender].subscriptions[receiver].balance % accounts[msg.sender].subscriptions[receiver].payment_amount;
         accounts[msg.sender].subscriptions[receiver].balance -= remainder;
         payable(msg.sender).transfer(remainder);
+        accounts[msg.sender].subscriptions[receiver].time_balance_last_updated = block.timestamp;
         if (accounts[msg.sender].subscriptions[receiver].balance < accounts[msg.sender].subscriptions[receiver].payment_amount) {
             cancelSubscription(receiver);
         }
-        emit SubscriptionData(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance, accounts[msg.sender].subscriptions[receiver].payment_amount, accounts[msg.sender].subscriptions[receiver].time_activated, accounts[msg.sender].subscriptions[receiver].time_between_payments, accounts[msg.sender].subscriptions[receiver].last_payment_time);
+        emit SubscriptionData(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance, accounts[msg.sender].subscriptions[receiver].payment_amount, accounts[msg.sender].subscriptions[receiver].time_activated, accounts[msg.sender].subscriptions[receiver].time_between_payments, accounts[msg.sender].subscriptions[receiver].last_payment_time, accounts[msg.sender].subscriptions[receiver].time_balance_last_updated);
     }
 
     // Checks if a subscription or payment over time is currently active, returns true if active, false otherwise
     function isActive(address sender, address receiver) view public returns (bool) {
         return accounts[sender].subscriptions[receiver].next_payment_time != 0;
-    }
+    }  
+
 
     // Emits attributes of a SubscriptionInfo struct
     function getData(address sender, address receiver) public returns (address, address, uint256, uint256, uint, uint) {
         require(msg.sender == sender || msg.sender == receiver, "Access denied to third party");
         require(isActive(sender, receiver), "Subscription not active!");
-        emit SubscriptionData(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance, accounts[msg.sender].subscriptions[receiver].payment_amount, accounts[msg.sender].subscriptions[receiver].time_activated, accounts[msg.sender].subscriptions[receiver].time_between_payments, accounts[msg.sender].subscriptions[receiver].last_payment_time);
+        emit SubscriptionData(msg.sender, receiver, accounts[msg.sender].subscriptions[receiver].balance, accounts[msg.sender].subscriptions[receiver].payment_amount, accounts[msg.sender].subscriptions[receiver].time_activated, accounts[msg.sender].subscriptions[receiver].time_between_payments, accounts[msg.sender].subscriptions[receiver].last_payment_time, accounts[msg.sender].subscriptions[receiver].time_balance_last_updated);
         return (sender, receiver, accounts[sender].subscriptions[receiver].balance, accounts[sender].subscriptions[receiver].payment_amount, accounts[sender].subscriptions[receiver].time_activated, accounts[sender].subscriptions[receiver].time_between_payments);
     }
 
@@ -126,11 +132,7 @@ contract Subscrypto {
         updatePaymentAvailable(sender, msg.sender); // update amount to pay immediately before payment has to be made
         // Cancel subscription if balance is not enough
         if (accounts[sender].subscriptions[msg.sender].balance < accounts[sender].subscriptions[msg.sender].payment_amount) {
-            // Transfer money to appropriate parties
-            payable(sender).transfer(accounts[sender].subscriptions[msg.sender].balance);
-            payable(msg.sender).transfer(accounts[sender].subscriptions[msg.sender].payment_available);
-            // Reset the subscription
-            delete(accounts[sender].subscriptions[msg.sender]);
+            cancelSubscription(msg.sender);
             return false;
         }
         require(accounts[sender].subscriptions[msg.sender].payment_available >= accounts[sender].subscriptions[msg.sender].payment_amount, "No ETH to be collected!");
@@ -138,7 +140,7 @@ contract Subscrypto {
         accounts[sender].subscriptions[msg.sender].total_paid += accounts[sender].subscriptions[msg.sender].payment_available;
         accounts[sender].subscriptions[msg.sender].last_payment_time = block.timestamp;
         accounts[sender].subscriptions[msg.sender].payment_available = 0;
-        emit SubscriptionData(sender, msg.sender, accounts[sender].subscriptions[msg.sender].balance, accounts[sender].subscriptions[msg.sender].payment_amount, accounts[sender].subscriptions[msg.sender].time_activated, accounts[sender].subscriptions[msg.sender].time_between_payments, accounts[sender].subscriptions[msg.sender].last_payment_time);
+        emit SubscriptionData(sender, msg.sender, accounts[sender].subscriptions[msg.sender].balance, accounts[sender].subscriptions[msg.sender].payment_amount, accounts[sender].subscriptions[msg.sender].time_activated, accounts[sender].subscriptions[msg.sender].time_between_payments, accounts[sender].subscriptions[msg.sender].last_payment_time,accounts[sender].subscriptions[msg.sender].time_balance_last_updated);
         return true;
     }
 
