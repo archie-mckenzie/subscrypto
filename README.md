@@ -2,6 +2,8 @@
 
 Subscrypto is a dApp for payment over time on the Ethereum blockchain. 
 
+Note to COS 495 staff: we have continued working on this project post Dean's Date due to our grant agreement with the Ethereum Foundation. Feel free to use our last commit before Dean's Date for grading purposes. To run the code, follow the # Run locally instructions below. 
+
 Here's a brief overview of how the smart contract works:
 
 Each wallet has a corresponding Subscrypto Account which contains a map of their subscriptions.
@@ -12,8 +14,8 @@ amount currently available to collect, agreed amount to be paid, and interval at
 For example, if we had a SubscriptionInfo struct which looked like this:
 
     SubscriptionInfo {
-        sender = aaron
-        receiver = phillip
+        sender = aaronskepasts.eth
+        receiver = philliptaylor.eth
         balance = 100 ETH
         payment_amount = 10 ETH
         payment_available = 20 ETH
